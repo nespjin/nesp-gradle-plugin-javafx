@@ -16,16 +16,30 @@
 
 package com.nesp.gradle.plugin.javafx;
 
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+import java.io.IOException;
 
-public class JavaFxPlugin implements Plugin<Project> {
+/**
+ * Team: NESP Technology
+ * Author: <a href="mailto:1756404649@qq.com">JinZhaolu Email:1756404649@qq.com</a>
+ * Time: Created 2021/8/4 20:22
+ * Project: nesp-gradle-plugin-javafx
+ * Description:
+ **/
+public class ParseException extends IOException {
 
-    @Override
-    public void apply(Project project) {
-        JavaFxPluginExtension javaFxPluginExtension =
-                project.getExtensions().create("nespJavaFx", JavaFxPluginExtension.class);
-
+    public ParseException() {
+        super();
     }
 
+    public ParseException(String message) {
+        super(message);
+    }
+
+    public ParseException(Throwable cause) {
+        super(cause);
+    }
+
+    public ParseException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

@@ -16,16 +16,34 @@
 
 package com.nesp.gradle.plugin.javafx;
 
-import org.gradle.api.Plugin;
-import org.gradle.api.Project;
+/**
+ * Team: NESP Technology
+ * Author: <a href="mailto:1756404649@qq.com">JinZhaolu Email:1756404649@qq.com</a>
+ * Time: Created 2021/8/4 23:44
+ * Project: nesp-gradle-plugin-javafx
+ * Description:
+ **/
+public enum Modifier {
+    PUBLIC("public"),
+    PACKAGE(""),
+    PROTECT("protect"),
+    PRIVATE("private"),
+    ABSTRACT("abstract"),
+    FINAL("final"),
+    ;
 
-public class JavaFxPlugin implements Plugin<Project> {
+    private String name;
 
-    @Override
-    public void apply(Project project) {
-        JavaFxPluginExtension javaFxPluginExtension =
-                project.getExtensions().create("nespJavaFx", JavaFxPluginExtension.class);
-
+    Modifier(String name) {
+        this.name = name;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public Modifier setName(final String name) {
+        this.name = name;
+        return this;
+    }
 }
