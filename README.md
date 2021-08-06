@@ -14,7 +14,7 @@ plugins {
     id 'com.nesp.javafx'
 }
 
-nespJavaFx {
+nespJfx {
     // Auto generate BaseController Java file for fxml files.
     baseController true
 }
