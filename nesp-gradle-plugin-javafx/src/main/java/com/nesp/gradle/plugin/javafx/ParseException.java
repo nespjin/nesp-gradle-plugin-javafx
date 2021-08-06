@@ -27,18 +27,31 @@ import java.io.IOException;
  **/
 public class ParseException extends IOException {
 
+    /**
+     * {@inheritDoc}
+     */
     public ParseException() {
         super();
     }
 
+    /**
+     * @param message {@inheritDoc}
+     */
     public ParseException(String message) {
         super(message);
     }
 
+    /**
+     * @param cause {@inheritDoc}
+     */
     public ParseException(Throwable cause) {
         super(cause);
     }
 
+    /**
+     * @param message {@inheritDoc}
+     * @param cause   {@inheritDoc}
+     */
     public ParseException(String message, Throwable cause) {
         super(message, cause);
     }

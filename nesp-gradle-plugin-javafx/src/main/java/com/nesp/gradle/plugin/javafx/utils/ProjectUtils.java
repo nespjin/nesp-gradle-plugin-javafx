@@ -1,6 +1,5 @@
 package com.nesp.gradle.plugin.javafx.utils;
 
-import com.nesp.gradle.plugin.javafx.GenerateBaseControllerFileTask;
 import org.gradle.api.Project;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.*;
@@ -14,6 +13,9 @@ import java.net.URLClassLoader;
 import java.util.Optional;
 import java.util.Set;
 
+/**
+ * Utility class for project.
+ */
 public class ProjectUtils {
     private static final String PACKAGE_NAME_DEFAULT = "com.nesp.gradle.plugin.javafx";
 

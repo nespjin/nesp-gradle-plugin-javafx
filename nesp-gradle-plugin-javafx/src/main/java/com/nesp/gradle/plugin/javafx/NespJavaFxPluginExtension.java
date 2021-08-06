@@ -23,5 +23,8 @@ public interface NespJavaFxPluginExtension {
      */
     Boolean getBaseController();
 
+    /**
+     * @param value is enable for generating BaseController Java source file.
+     */
     void setBaseController(Boolean value);
 }

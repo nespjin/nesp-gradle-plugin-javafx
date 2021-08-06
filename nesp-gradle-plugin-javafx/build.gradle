@@ -13,23 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 plugins {
     id 'java-gradle-plugin'
+    id 'maven-publish'
+    id 'com.gradle.plugin-publish' version '0.14.0'
     id 'org.openjfx.javafxplugin' version '0.0.10'
 }
+
+pluginBundle {
+    website = 'https://github.com/nespjin/nesp-gradle-plugin-javafx'
+    vcsUrl = 'https://github.com/nespjin/nesp-gradle-plugin-javafx'
+    tags = ['NESP', 'JavaFx', 'FXML']
+}
+
+group 'com.nesp'
+version '1.0'
 
 gradlePlugin {
     plugins {
         NespJavaFx {
             id = 'com.nesp.javafx'
+            displayName = 'Nesp JavaFx Plugin '
+            description = 'A plugin that helps you develop JavaFx project easilly.'
             implementationClass = 'com.nesp.gradle.plugin.javafx.JavaFxPlugin'
         }
     }
 }
-
-//group 'org.example'
-//version '1.0-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -46,13 +55,11 @@ dependencies {
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
 }
 
-javafx {
-    version = "16"
-    modules = ['javafx.controls', 'javafx.fxml', 'javafx.graphics']
-}
-
 test {
-
+    javafx {
+        version = "16"
+        modules = ['javafx.controls', 'javafx.fxml', 'javafx.graphics']
+    }
     useJUnitPlatform()
 }
 
