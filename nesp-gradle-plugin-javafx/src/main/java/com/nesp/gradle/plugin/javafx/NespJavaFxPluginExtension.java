@@ -14,4 +14,14 @@
  * limitations under the License.
  */
 
-rootProject.name = 'nesp-gradle-plugin-javafx'
+package com.nesp.gradle.plugin.javafx;
+
+public interface NespJavaFxPluginExtension {
+
+    /**
+     * Is Enable to generate BaseController Java source file.
+     */
+    Boolean getBaseController();
+
+    void setBaseController(Boolean value);
+}

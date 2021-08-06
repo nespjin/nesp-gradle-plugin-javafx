@@ -15,6 +15,27 @@
           </set>
         </option>
       </GradleProjectSettings>
+      <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/nesp-gradle-plugin-javafx" name="nesp-gradle-plugin-javafx">
+                <projects>
+                  <project path="$PROJECT_DIR$/nesp-gradle-plugin-javafx" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/app" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/nesp-gradle-plugin-javafx" />
+          </set>
+        </option>
+      </GradleProjectSettings>
     </option>
   </component>
 </project>
