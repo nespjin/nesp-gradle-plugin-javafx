@@ -14,36 +14,11 @@
  * limitations under the License.
  */
 
-package com.nesp.gradle.plugin.javafx;
-
 /**
  * Team: NESP Technology
  * Author: <a href="mailto:1756404649@qq.com">JinZhaolu Email:1756404649@qq.com</a>
- * Time: Created 2021/8/4 23:44
+ * Time: Created 2021/8/8 22:44
  * Project: nesp-gradle-plugin-javafx
- * Description:
+ * Description: This package is parser resource mapping by java source code.
  **/
-public enum Modifier {
-    PUBLIC("public"),
-    PACKAGE(""),
-    PROTECTED("protect"),
-    PRIVATE("private"),
-    ABSTRACT("abstract"),
-    FINAL("final"),
-    ;
-
-    private String name;
-
-    Modifier(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Modifier setName(final String name) {
-        this.name = name;
-        return this;
-    }
-}
+package com.nesp.gradle.plugin.javafx.resource;

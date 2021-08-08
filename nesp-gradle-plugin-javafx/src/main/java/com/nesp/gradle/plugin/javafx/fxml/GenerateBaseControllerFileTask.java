@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nesp.gradle.plugin.javafx;
+package com.nesp.gradle.plugin.javafx.fxml;
 
 import com.nesp.gradle.plugin.javafx.utils.ProjectUtils;
 import com.squareup.javapoet.*;
@@ -53,7 +53,7 @@ public abstract class GenerateBaseControllerFileTask extends DefaultTask {
             try {
                 baseControllerFXMLParser.parse(fxmlFile);
                 baseControllerClasses.add(baseControllerFXMLParser.getBaseControllerClass());
-            } catch (ParseException e) {
+            } catch (FXMLParseException e) {
                 e.printStackTrace();
             }
         }
@@ -76,15 +76,15 @@ public abstract class GenerateBaseControllerFileTask extends DefaultTask {
             List<ClassMethod> classMethods = baseControllerClass.getClassMethods();
             for (ClassMethod classMethod : classMethods) {
                 MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(classMethod.getName());
-                if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.Modifier.ABSTRACT) {
+                if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.fxml.Modifier.ABSTRACT) {
                     methodBuilder.addModifiers(Modifier.ABSTRACT);
-                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.Modifier.PUBLIC) {
+                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.fxml.Modifier.PUBLIC) {
                     methodBuilder.addModifiers(Modifier.PUBLIC);
-                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.Modifier.PROTECTED) {
+                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.fxml.Modifier.PROTECTED) {
                     methodBuilder.addModifiers(Modifier.PROTECTED);
-                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.Modifier.PRIVATE) {
+                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.fxml.Modifier.PRIVATE) {
                     methodBuilder.addModifiers(Modifier.PRIVATE);
-                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.Modifier.FINAL) {
+                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.fxml.Modifier.FINAL) {
                     methodBuilder.addModifiers(Modifier.FINAL);
                 }
 

@@ -14,56 +14,36 @@
  * limitations under the License.
  */
 
-package com.nesp.gradle.plugin.javafx;
-
-import java.lang.reflect.Type;
+package com.nesp.gradle.plugin.javafx.fxml;
 
 /**
  * Team: NESP Technology
  * Author: <a href="mailto:1756404649@qq.com">JinZhaolu Email:1756404649@qq.com</a>
- * Time: Created 2021/8/4 22:00
+ * Time: Created 2021/8/4 23:44
  * Project: nesp-gradle-plugin-javafx
  * Description:
  **/
-public final class ClassField {
+public enum Modifier {
+    PUBLIC("public"),
+    PACKAGE(""),
+    PROTECTED("protect"),
+    PRIVATE("private"),
+    ABSTRACT("abstract"),
+    FINAL("final"),
+    ;
 
-    private static final String TAG = "ClassField";
-
-    private String typeName;
-    private Type type;
     private String name;
 
-    public ClassField(String typeName, String name) {
-        this.typeName = typeName;
+    Modifier(String name) {
         this.name = name;
-    }
-
-    public ClassField(final Type type, final String name) {
-        this.type = type;
-        this.name = name;
-    }
-
-    public String getTypeName() {
-        return typeName;
-    }
-
-    public void setTypeName(String typeName) {
-        this.typeName = typeName;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Modifier setName(final String name) {
         this.name = name;
+        return this;
     }
 }

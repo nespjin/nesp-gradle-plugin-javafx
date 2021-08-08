@@ -14,37 +14,37 @@
  * limitations under the License.
  */
 
-package com.nesp.gradle.plugin.javafx;
+package com.nesp.gradle.plugin.javafx.fxml;
+
+import com.nesp.gradle.plugin.javafx.ParseException;
 
 /**
  * Team: NESP Technology
  * Author: <a href="mailto:1756404649@qq.com">JinZhaolu Email:1756404649@qq.com</a>
- * Time: Created 2021/8/8 22:43
+ * Time: Created 2021/8/4 20:22
  * Project: nesp-gradle-plugin-javafx
  * Description:
  **/
-public class ParseException extends Exception {
-
-    private static final String TAG = "ParseException";
+public class FXMLParseException extends ParseException {
 
     /**
      * {@inheritDoc}
      */
-    public ParseException() {
+    public FXMLParseException() {
         super();
     }
 
     /**
      * @param message {@inheritDoc}
      */
-    public ParseException(String message) {
+    public FXMLParseException(String message) {
         super(message);
     }
 
     /**
      * @param cause {@inheritDoc}
      */
-    public ParseException(Throwable cause) {
+    public FXMLParseException(Throwable cause) {
         super(cause);
     }
 
@@ -52,7 +52,7 @@ public class ParseException extends Exception {
      * @param message {@inheritDoc}
      * @param cause   {@inheritDoc}
      */
-    public ParseException(String message, Throwable cause) {
+    public FXMLParseException(String message, Throwable cause) {
         super(message, cause);
     }
 }

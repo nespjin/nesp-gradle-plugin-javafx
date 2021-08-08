@@ -16,7 +16,9 @@
 
 package com.nesp.gradle.plugin.javafx;
 
-import org.gradle.internal.impldep.com.google.gson.Gson;
+import com.nesp.gradle.plugin.javafx.fxml.BaseControllerClass;
+import com.nesp.gradle.plugin.javafx.fxml.BaseControllerFXMLParser;
+import com.nesp.gradle.plugin.javafx.fxml.FXMLParseException;
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
@@ -31,7 +33,7 @@ import java.util.Objects;
 class BaseControllerFXMLParserTest {
 
     @Test
-    void parse() throws ParseException {
+    void parse() throws FXMLParseException {
         final BaseControllerFXMLParser baseControllerFXMLParser = new BaseControllerFXMLParser();
          baseControllerFXMLParser.parse(Objects.requireNonNull(getClass().getClassLoader().getResource("fxml_test.fxml")));
         final BaseControllerClass baseControllerClass = baseControllerFXMLParser.getBaseControllerClass();

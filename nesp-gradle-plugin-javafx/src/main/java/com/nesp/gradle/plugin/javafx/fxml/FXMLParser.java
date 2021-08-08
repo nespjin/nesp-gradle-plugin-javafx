@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nesp.gradle.plugin.javafx;
+package com.nesp.gradle.plugin.javafx.fxml;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -71,7 +71,7 @@ public class FXMLParser {
 
     protected File mFXMLFile;
 
-    public void parse(File fxmlFile) throws ParseException {
+    public void parse(File fxmlFile) throws FXMLParseException {
         this.mFXMLFile = fxmlFile;
         FileInputStream inputStream = null;
         try {
@@ -90,7 +90,7 @@ public class FXMLParser {
         }
     }
 
-    public void parse(URL url) throws ParseException {
+    public void parse(URL url) throws FXMLParseException {
         try {
             this.mFXMLFile = new File(url.toURI());
         } catch (URISyntaxException e) {
@@ -113,7 +113,7 @@ public class FXMLParser {
         }
     }
 
-    protected void parse(InputStream inputStream) throws ParseException {
+    protected void parse(InputStream inputStream) throws FXMLParseException {
         if (inputStream == null) {
             throw new NullPointerException("inputStream is null");
         }
@@ -192,7 +192,7 @@ public class FXMLParser {
     }
 
 
-    private void processProcessingInstruction() throws ParseException {
+    private void processProcessingInstruction() throws FXMLParseException {
         String piTarget = mXMLStreamReader.getPITarget().trim();
 
         if (piTarget.equals(LANGUAGE_PROCESSING_INSTRUCTION)) {
@@ -204,7 +204,7 @@ public class FXMLParser {
         }
     }
 
-    private void processImport() throws ParseException {
+    private void processImport() throws FXMLParseException {
         String target = mXMLStreamReader.getPIData().trim();
 
         if (target.endsWith(".*")) {
@@ -218,7 +218,7 @@ public class FXMLParser {
         mPackages.add(name);
     }
 
-    private void importClass(String name) throws ParseException {
+    private void importClass(String name) throws FXMLParseException {
         try {
             loadType(name, true);
         } catch (ClassNotFoundException exception) {
@@ -372,8 +372,8 @@ public class FXMLParser {
         return mClassesInfo;
     }
 
-    private ParseException constructParseException(Throwable cause) {
-        return new ParseException(constructFXMLTrace(), cause);
+    private FXMLParseException constructParseException(Throwable cause) {
+        return new FXMLParseException(constructFXMLTrace(), cause);
     }
 
     private String constructFXMLTrace() {

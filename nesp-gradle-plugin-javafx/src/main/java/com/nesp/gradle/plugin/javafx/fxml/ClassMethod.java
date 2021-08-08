@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.nesp.gradle.plugin.javafx;
+package com.nesp.gradle.plugin.javafx.fxml;
 
 import java.lang.reflect.Type;
 import java.util.List;
