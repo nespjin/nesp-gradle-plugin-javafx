@@ -16,15 +16,27 @@
 
 package com.nesp.gradle.plugin.javafx;
 
-public interface NespJavaFxPluginExtension {
+import com.nesp.gradle.plugin.javafx.fxml.BaseControllerOptions;
+import groovy.lang.Closure;
+import org.gradle.api.Action;
+import org.gradle.util.internal.ConfigureUtil;
 
-    /**
-     * Is Enable to generate BaseController Java source file.
-     */
-    Boolean getBaseController();
+public class NespJavaFxPluginExtension {
+    BaseControllerOptions mBaseControllerOptions;
 
-    /**
-     * @param value is enable for generating BaseController Java source file.
-     */
-    void setBaseController(Boolean value);
+    public BaseControllerOptions baseControllerOptions(Closure<? super BaseControllerOptions> closure) {
+        return baseControllerOptions(ConfigureUtil.configureUsing(closure));
+    }
+
+    public BaseControllerOptions baseControllerOptions(Action<? super BaseControllerOptions> action) {
+        if (mBaseControllerOptions == null) {
+            mBaseControllerOptions = new BaseControllerOptions();
+        }
+        action.execute(mBaseControllerOptions);
+        return mBaseControllerOptions;
+    }
+
+    public BaseControllerOptions baseControllerOptions() {
+        return mBaseControllerOptions;
+    }
 }

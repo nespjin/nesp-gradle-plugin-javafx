@@ -83,6 +83,11 @@ public class ProjectUtils {
 
         refClasspath.classpath = refClasspath.classpath.plus(
                 project.getTasks().getByName("jar").getOutputs().getFiles());
+
+
+        refClasspath.classpath = refClasspath.classpath.plus(
+                project.getTasks().getByName("classes").getOutputs().getFiles());
+
         Set<File> classpathFiles = refClasspath.classpath.getFiles();
         URL[] urls = new URL[classpathFiles.size()];
         File[] classpathFileArray = classpathFiles.toArray(new File[0]);

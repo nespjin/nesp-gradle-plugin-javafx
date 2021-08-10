@@ -10,7 +10,11 @@ group 'com.nesp.plugin'
 version '1.0-SNAPSHOT'
 
 nespJfx {
-    baseController true
+    baseControllerOptions {
+        enable = true
+        superClass = "com.nesp.plugin.app.BaseController"
+        interfaces = ["javafx.fxml.Initializable"]
+    }
 }
 
 repositories {

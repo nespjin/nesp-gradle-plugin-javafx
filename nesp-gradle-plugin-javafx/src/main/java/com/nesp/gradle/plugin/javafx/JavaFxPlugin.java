@@ -16,6 +16,7 @@
 
 package com.nesp.gradle.plugin.javafx;
 
+import com.nesp.gradle.plugin.javafx.fxml.BaseControllerOptions;
 import com.nesp.gradle.plugin.javafx.fxml.GenerateBaseControllerFileTask;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -25,6 +26,8 @@ import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.compile.JavaCompile;
 
 import java.io.File;
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -83,10 +86,17 @@ public class JavaFxPlugin implements Plugin<Project> {
                             .findByName(NESP_JAVA_FX_PLUGIN_EXTENSION_NAME);
             if (nespJfx == null) return;
 
-            Boolean baseControllerEnable = Optional.ofNullable(nespJfx.getBaseController()).orElse(false);
+            Optional<BaseControllerOptions> baseControllerOptions = Optional.ofNullable(nespJfx.baseControllerOptions());
+            Boolean baseControllerEnable = baseControllerOptions.map(BaseControllerOptions::getEnable).orElse(false);
+            String baseControllerSuperClass = baseControllerOptions.map(BaseControllerOptions::getSuperClass).orElse("");
+            List<String> baseControllerSuperInterfaces = baseControllerOptions.map(BaseControllerOptions::getInterfaces).orElse(Collections.emptyList());
 
-            GenerateBaseControllerFileTask generateBaseControllerFileTask = project1.getTasks()
-                    .create(GENERATE_BASE_CONTROLLER_FILE_TASK_NAME, GenerateBaseControllerFileTask.class);
+            GenerateBaseControllerFileTask generateBaseControllerFileTask = project1.getTasks().create(
+                    GENERATE_BASE_CONTROLLER_FILE_TASK_NAME,
+                    GenerateBaseControllerFileTask.class,
+                    baseControllerSuperClass,
+                    baseControllerSuperInterfaces
+            );
 
             Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
             if (!compileJavaTasks.isEmpty()) {
