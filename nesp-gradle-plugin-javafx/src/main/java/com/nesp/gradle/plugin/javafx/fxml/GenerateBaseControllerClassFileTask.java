@@ -16,10 +16,10 @@
 
 package com.nesp.gradle.plugin.javafx.fxml;
 
+import com.nesp.gradle.plugin.javafx.BaseTask;
 import com.nesp.gradle.plugin.javafx.utils.ProjectUtils;
 import com.squareup.javapoet.*;
 import javafx.fxml.FXML;
-import org.gradle.api.DefaultTask;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
 
@@ -28,24 +28,21 @@ import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
-public abstract class GenerateBaseControllerFileTask extends DefaultTask {
+public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
 
     private static final String[] SUPPORT_FILE_TYPES = new String[]{
             ".fxml"
     };
 
-    public static String getGenerateSourcePath(Project project) {
-        return project.getBuildDir() + "/generated/sources/javafx/src/main/java";
-    }
-
     private final String baseControllerSuperClassName;
     private final List<String> baseControllerSuperInterfaces;
 
     @Inject
-    public GenerateBaseControllerFileTask(String superClass, List<String> superInterfaces) {
+    public GenerateBaseControllerClassFileTask(String superClass, List<String> superInterfaces) {
         this.baseControllerSuperClassName = superClass;
         this.baseControllerSuperInterfaces = superInterfaces;
     }
@@ -53,9 +50,10 @@ public abstract class GenerateBaseControllerFileTask extends DefaultTask {
     @TaskAction
     public void run() {
         final Project project = getProject();
-        final File desFile = new File(getGenerateSourcePath(project));
-        String packageName = ProjectUtils.findPackageName(project);
-        final ClassLoader classLoader = ProjectUtils.createClassLoader(getProject());
+        final File desFile = getSourcePathGenerate();
+        final String packageName = getPackageName();
+        final ClassLoader classLoader = getClassLoader();
+
         final List<File> fxmlFiles = scanProjectFxmlFiles(project);
         Type baseControllerSuperClass = null;
         if (!baseControllerSuperClassName.isEmpty()) {

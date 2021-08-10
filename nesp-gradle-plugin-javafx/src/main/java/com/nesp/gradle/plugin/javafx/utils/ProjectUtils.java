@@ -102,4 +102,8 @@ public class ProjectUtils {
 
         return new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
     }
+
+    public static String getGenerateSourcePath(Project project) {
+        return project.getBuildDir() + "/generated/sources/javafx/src/main/java";
+    }
 }

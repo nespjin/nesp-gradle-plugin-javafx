@@ -42,7 +42,7 @@ application {
         java {
             srcDirs = [
                     "src/main/java",
-                    "build/generated/sources/javafx/src/main/java",
+                    "fieldSpecBuilder/generated/sources/javafx/src/main/java",
             ]
         }
     }

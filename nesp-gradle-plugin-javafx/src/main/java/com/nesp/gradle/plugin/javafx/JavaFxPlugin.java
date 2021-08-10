@@ -17,7 +17,9 @@
 package com.nesp.gradle.plugin.javafx;
 
 import com.nesp.gradle.plugin.javafx.fxml.BaseControllerOptions;
-import com.nesp.gradle.plugin.javafx.fxml.GenerateBaseControllerFileTask;
+import com.nesp.gradle.plugin.javafx.fxml.GenerateBaseControllerClassFileTask;
+import com.nesp.gradle.plugin.javafx.resource.GenerateRClassFileTask;
+import com.nesp.gradle.plugin.javafx.utils.ProjectUtils;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -35,6 +37,7 @@ public class JavaFxPlugin implements Plugin<Project> {
 
     public static final String NESP_JAVA_FX_PLUGIN_EXTENSION_NAME = "nespJfx";
     public static final String GENERATE_BASE_CONTROLLER_FILE_TASK_NAME = "generateJavaFxBaseControllerFile";
+    public static final String GENERATE_R_FILE_TASK_NAME = "generateJavaFxRFile";
 
     @Override
     public void apply(Project project) {
@@ -51,7 +54,7 @@ public class JavaFxPlugin implements Plugin<Project> {
     private void configureSourceSetGenerateFileOutputs(Project project) {
         project.afterEvaluate(project1 -> {
             if (project1.getPlugins().hasPlugin(JavaPlugin.class)) {
-                final File desFile = new File(GenerateBaseControllerFileTask.getGenerateSourcePath(project));
+                final File desFile = new File(ProjectUtils.getGenerateSourcePath(project));
 
                 JavaPluginExtension javaPluginExtension =
                         project1.getExtensions().findByType(JavaPluginExtension.class);
@@ -91,20 +94,24 @@ public class JavaFxPlugin implements Plugin<Project> {
             String baseControllerSuperClass = baseControllerOptions.map(BaseControllerOptions::getSuperClass).orElse("");
             List<String> baseControllerSuperInterfaces = baseControllerOptions.map(BaseControllerOptions::getInterfaces).orElse(Collections.emptyList());
 
-            GenerateBaseControllerFileTask generateBaseControllerFileTask = project1.getTasks().create(
+            GenerateBaseControllerClassFileTask generateBaseControllerClassFileTask = project1.getTasks().create(
                     GENERATE_BASE_CONTROLLER_FILE_TASK_NAME,
-                    GenerateBaseControllerFileTask.class,
+                    GenerateBaseControllerClassFileTask.class,
                     baseControllerSuperClass,
                     baseControllerSuperInterfaces
             );
+
+            GenerateRClassFileTask generateRClassFileTask = project1.getTasks().create(GENERATE_R_FILE_TASK_NAME,
+                    GenerateRClassFileTask.class);
 
             Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
             if (!compileJavaTasks.isEmpty()) {
                 JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
                 compileJavaTask.doFirst(task1 -> {
                     if (baseControllerEnable) {
-                        generateBaseControllerFileTask.run();
+                        generateBaseControllerClassFileTask.run();
                     }
+                    generateRClassFileTask.run();
                 });
             }
         });
