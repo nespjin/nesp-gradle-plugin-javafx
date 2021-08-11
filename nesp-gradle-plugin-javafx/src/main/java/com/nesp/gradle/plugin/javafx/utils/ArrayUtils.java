@@ -14,36 +14,14 @@
  * limitations under the License.
  */
 
-package com.nesp.gradle.plugin.javafx.resource;
+package com.nesp.gradle.plugin.javafx.utils;
 
-import java.util.Map;
-
-public class RInnerClass {
-    private String name;
-    private Map<Object, Object>  fields;
-    private String jDoc;
-
-    public String getName() {
-        return name;
+public final class ArrayUtils {
+    private ArrayUtils() {
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public static <T> boolean isEmpty(T[] array) {
+        return array == null || array.length == 0;
     }
 
-    public Map<Object, Object> getFields() {
-        return fields;
-    }
-
-    public void setFields(Map<Object, Object> fields) {
-        this.fields = fields;
-    }
-
-    public String getjDoc() {
-        return jDoc;
-    }
-
-    public void setjDoc(String jDoc) {
-        this.jDoc = jDoc;
-    }
 }

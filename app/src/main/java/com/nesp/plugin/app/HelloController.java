@@ -2,11 +2,11 @@ package com.nesp.plugin.app;
 
 import javafx.fxml.FXML;
 
-public class HelloController  {
+public class HelloController extends BaseHelloViewController {
 
     @FXML
     protected void onHelloButtonClick() {
-//        welcomeText.setText("Welcome to JavaFX Application!");
+        welcomeText.setText(R.string.description);
     }
 
 }

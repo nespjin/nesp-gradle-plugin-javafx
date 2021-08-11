@@ -19,6 +19,7 @@ package com.nesp.gradle.plugin.javafx;
 import com.nesp.gradle.plugin.javafx.fxml.BaseControllerOptions;
 import com.nesp.gradle.plugin.javafx.fxml.GenerateBaseControllerClassFileTask;
 import com.nesp.gradle.plugin.javafx.resource.GenerateRClassFileTask;
+import com.nesp.gradle.plugin.javafx.resource.ResourceConfig;
 import com.nesp.gradle.plugin.javafx.utils.ProjectUtils;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -44,6 +45,7 @@ public class JavaFxPlugin implements Plugin<Project> {
         configureSourceSetGenerateFileOutputs(project);
         configureNespJavaFxPluginExtension(project);
         configureGenerateBaseControllerFileTask(project);
+        configureGenerateRFileTask(project);
     }
 
     /**
@@ -113,6 +115,26 @@ public class JavaFxPlugin implements Plugin<Project> {
                     }
                     generateRClassFileTask.run();
                 });
+            }
+        });
+    }
+
+    private void configureGenerateRFileTask(Project project) {
+        project.afterEvaluate(project1 -> {
+            NespJavaFxPluginExtension nespJfx =
+                    (NespJavaFxPluginExtension) project1.getExtensions()
+                            .findByName(NESP_JAVA_FX_PLUGIN_EXTENSION_NAME);
+            if (nespJfx == null) return;
+
+            GenerateRClassFileTask generateRClassFileTask = project1.getTasks().create(
+                    GENERATE_R_FILE_TASK_NAME,
+                    GenerateRClassFileTask.class,
+                    Optional.ofNullable(nespJfx.resourceConfig()).orElse(ResourceConfig.getDefault()));
+
+            Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
+            if (!compileJavaTasks.isEmpty()) {
+                JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
+                compileJavaTask.doFirst(task1 -> generateRClassFileTask.run());
             }
         });
     }

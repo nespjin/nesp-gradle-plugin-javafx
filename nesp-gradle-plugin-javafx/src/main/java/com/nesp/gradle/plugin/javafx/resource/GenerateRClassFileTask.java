@@ -19,13 +19,21 @@ package com.nesp.gradle.plugin.javafx.resource;
 import com.nesp.gradle.plugin.javafx.BaseTask;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.internal.impldep.org.eclipse.jgit.annotations.NonNull;
 
+import javax.inject.Inject;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.*;
 
 public abstract class GenerateRClassFileTask extends BaseTask {
+
+    @NonNull
+    private final ResourceConfig mResourceConfig;
+
+    @Inject
+    public GenerateRClassFileTask(ResourceConfig resourceConfig) {
+        mResourceConfig = Optional.ofNullable(resourceConfig).orElse(ResourceConfig.getDefault());
+    }
 
     @TaskAction
     public void run() {
@@ -36,28 +44,10 @@ public abstract class GenerateRClassFileTask extends BaseTask {
 
         List<RInnerClass> rInnerClasses = new ArrayList<>();
 
-        Properties properties = new Properties();
-        InputStream resourceAsStream = classLoader.getResourceAsStream("values/strings/strings.properties");
-        try {
-            properties.load(resourceAsStream);
-            System.out.println("Properties size = " + properties.size());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        if (properties.size() > 0) {
-            RInnerClass rInnerClass = new RInnerClass();
-            rInnerClass.setName(ResourceType.STRING.name);
-            Map<Object, Object> fields = new HashMap<>();
-            Set<Map.Entry<Object, Object>> entries = properties.entrySet();
-            for (Map.Entry<Object, Object> entry : entries) {
-                fields.put(entry.getKey(), entry.getValue());
-            }
-            rInnerClass.setFields(fields);
-            rInnerClasses.add(rInnerClass);
-        }
+        StringInnerResourceClassLoader.loadFromDirPaths(classLoader, rInnerClasses, mResourceConfig.getStringSrcDirs());
 
         new RClassGenerate(desFile, packageName, rInnerClasses).generate();
     }
+
 
 }

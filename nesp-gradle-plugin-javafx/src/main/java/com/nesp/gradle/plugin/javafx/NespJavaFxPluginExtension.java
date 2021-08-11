@@ -17,12 +17,14 @@
 package com.nesp.gradle.plugin.javafx;
 
 import com.nesp.gradle.plugin.javafx.fxml.BaseControllerOptions;
+import com.nesp.gradle.plugin.javafx.resource.ResourceConfig;
 import groovy.lang.Closure;
 import org.gradle.api.Action;
 import org.gradle.util.internal.ConfigureUtil;
 
 public class NespJavaFxPluginExtension {
     BaseControllerOptions mBaseControllerOptions;
+    ResourceConfig mResourceConfig;
 
     public BaseControllerOptions baseControllerOptions(Closure<? super BaseControllerOptions> closure) {
         return baseControllerOptions(ConfigureUtil.configureUsing(closure));
@@ -38,5 +40,18 @@ public class NespJavaFxPluginExtension {
 
     public BaseControllerOptions baseControllerOptions() {
         return mBaseControllerOptions;
+    }
+
+
+    public ResourceConfig resourceConfig(Action<? super ResourceConfig> action) {
+        if (mResourceConfig == null) {
+            mResourceConfig = new ResourceConfig();
+        }
+        action.execute(mResourceConfig);
+        return mResourceConfig;
+    }
+
+    public ResourceConfig resourceConfig() {
+        return mResourceConfig;
     }
 }
