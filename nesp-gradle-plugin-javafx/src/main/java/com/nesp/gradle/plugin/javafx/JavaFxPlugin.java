@@ -103,9 +103,6 @@ public class JavaFxPlugin implements Plugin<Project> {
                     baseControllerSuperInterfaces
             );
 
-            GenerateRClassFileTask generateRClassFileTask = project1.getTasks().create(GENERATE_R_FILE_TASK_NAME,
-                    GenerateRClassFileTask.class);
-
             Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
             if (!compileJavaTasks.isEmpty()) {
                 JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
@@ -113,7 +110,6 @@ public class JavaFxPlugin implements Plugin<Project> {
                     if (baseControllerEnable) {
                         generateBaseControllerClassFileTask.run();
                     }
-                    generateRClassFileTask.run();
                 });
             }
         });

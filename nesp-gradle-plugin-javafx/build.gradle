@@ -18,8 +18,17 @@ plugins {
     id 'maven-publish'
     id 'com.gradle.plugin-publish' version '0.14.0'
     id 'org.openjfx.javafxplugin' version '0.0.10'
+    id 'groovy'
 }
 
+publishing {
+    repositories {
+        maven {
+            name = 'localPluginRepository'
+            url = '../../local-plugin-repository'
+        }
+    }
+}
 pluginBundle {
     website = 'https://github.com/nespjin/nesp-gradle-plugin-javafx'
     vcsUrl = 'https://github.com/nespjin/nesp-gradle-plugin-javafx'
