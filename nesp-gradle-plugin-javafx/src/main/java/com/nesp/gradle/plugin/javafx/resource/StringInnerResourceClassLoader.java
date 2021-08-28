@@ -23,7 +23,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.function.Predicate;
 
 final class StringInnerResourceClassLoader {
     private static final String STRING_RES_FILE_EXTENSION = "properties";
@@ -42,10 +41,7 @@ final class StringInnerResourceClassLoader {
     private static void loadFromDirPath(ClassLoader classLoader,
                                         List<RInnerClass> rInnerClasses,
                                         String resourceDirPath) {
-        System.out.println("loadFromDirPath resourceDirPath = " + resourceDirPath);
-
         File dir = new File(resourceDirPath);
-        System.out.println("loadFromDirPath resourceDirPath File = " + dir.getAbsolutePath());
         File[] files = dir.listFiles();
 
         if (ArrayUtils.isEmpty(files)) return;
@@ -70,8 +66,6 @@ final class StringInnerResourceClassLoader {
         Properties properties = new Properties();
         try {
             // "values/strings/strings.properties"
-//            resourceFilePath = resourceFilePath.split("resources")[1].substring(1);
-            System.out.println("loadFromDirPath resourceFilePath = " + resourceFilePath);
             InputStream fileInputStream = new FileInputStream(resourceFilePath);
             properties.load(fileInputStream);
         } catch (IOException e) {

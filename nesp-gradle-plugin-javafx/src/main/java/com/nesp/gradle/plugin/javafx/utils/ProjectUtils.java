@@ -93,7 +93,6 @@ public class ProjectUtils {
         for (int i = 0; i < classpathFileArray.length; i++) {
             try {
                 urls[i] = classpathFileArray[i].toURI().toURL();
-                System.out.println(urls[i]);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }

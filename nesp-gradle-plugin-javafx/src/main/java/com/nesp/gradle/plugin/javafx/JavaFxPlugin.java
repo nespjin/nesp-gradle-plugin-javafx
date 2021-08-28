@@ -69,6 +69,8 @@ public class JavaFxPlugin implements Plugin<Project> {
 
                     mainSrcDirs.add(desFile);
 
+                    System.out.println("add src dir: " + desFile.getAbsolutePath());
+
                     javaPluginExtension
                             .getSourceSets()
                             .getByName("main")
