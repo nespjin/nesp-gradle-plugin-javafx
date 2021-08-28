@@ -3,6 +3,9 @@ JavaFx Gradle Plugin
 
 配合[nesp-sdk-javafx](https://github.com/nespjin/nesp-sdk-javafx)使用，开发JavaFx就像开发Android一样简单。
 
+## 前提
+需要使用：gradle-7.1
+
 ## 功能特性
 
 1. 自动生成BaseController类
