@@ -16,6 +16,7 @@
 
 package com.nesp.gradle.plugin.javafx.utils;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public final class ListUtils {
@@ -30,6 +31,14 @@ public final class ListUtils {
     @SafeVarargs
     public static <T> List<T> ifEmpty(List<T> list, T... values) {
         return (list == null || list.isEmpty()) ? List.of(values) : list;
+    }
+
+    public static List<String> prefix(List<String> list, final String prefix) {
+        List<String> rStringList = new LinkedList<>();
+        for (String t : list) {
+            rStringList.add(prefix + t);
+        }
+        return rStringList;
     }
 
 }

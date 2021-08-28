@@ -17,11 +17,13 @@
 package com.nesp.gradle.plugin.javafx.resource;
 
 import com.nesp.gradle.plugin.javafx.utils.ListUtils;
+import org.gradle.api.Project;
 
+import java.io.File;
 import java.util.List;
 
 public class ResourceConfig {
-    public static final String DEFAULT_RESOURCE_DIR_PATH_STRING = "string";
+    public static final String DEFAULT_RESOURCE_DIR_PATH_STRING = "strings";
     public static final String DEFAULT_RESOURCE_DIR_PATH_ASSETS = "assets";
     public static final String DEFAULT_RESOURCE_DIR_PATH_DRAWABLE = "drawable";
     public static final String DEFAULT_RESOURCE_DIR_PATH_LAYOUT = "layout";
@@ -35,8 +37,9 @@ public class ResourceConfig {
         return new ResourceConfig();
     }
 
-    public List<String> getStringSrcDirs() {
-        return ListUtils.ifEmpty(mStringSrcDirs, DEFAULT_RESOURCE_DIR_PATH_STRING);
+    public List<String> getStringSrcDirs(final Project project) {
+        return ListUtils.prefix(ListUtils
+                .ifEmpty(mStringSrcDirs, DEFAULT_RESOURCE_DIR_PATH_STRING), pathPrefix(project));
     }
 
     public void setStringSrcDirs(List<String> stringSrcDirs) {
@@ -65,5 +68,20 @@ public class ResourceConfig {
 
     public void setAssetsSrcDirs(List<String> assetsSrcDirs) {
         mAssetsSrcDirs = assetsSrcDirs;
+    }
+
+    private static String getRealPath(final Project project, final String path) {
+        return pathPrefix(project).concat(path);
+    }
+
+    private static String pathPrefix(final Project project) {
+        return project.getProjectDir().getAbsolutePath()
+                .concat(File.separator)
+                .concat("src")
+                .concat(File.separator)
+                .concat("main")
+                .concat(File.separator)
+                .concat("resources")
+                .concat(File.separator);
     }
 }

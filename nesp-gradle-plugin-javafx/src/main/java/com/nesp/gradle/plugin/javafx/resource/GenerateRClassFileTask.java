@@ -44,7 +44,8 @@ public abstract class GenerateRClassFileTask extends BaseTask {
 
         List<RInnerClass> rInnerClasses = new ArrayList<>();
 
-        StringInnerResourceClassLoader.loadFromDirPaths(classLoader, rInnerClasses, mResourceConfig.getStringSrcDirs());
+        StringInnerResourceClassLoader.loadFromDirPaths(classLoader, rInnerClasses,
+                mResourceConfig.getStringSrcDirs(project));
 
         new RClassGenerate(desFile, packageName, rInnerClasses).generate();
     }

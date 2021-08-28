@@ -19,9 +19,11 @@ package com.nesp.gradle.plugin.javafx.resource;
 import com.nesp.gradle.plugin.javafx.utils.ArrayUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.function.Predicate;
 
 final class StringInnerResourceClassLoader {
     private static final String STRING_RES_FILE_EXTENSION = "properties";
@@ -40,7 +42,10 @@ final class StringInnerResourceClassLoader {
     private static void loadFromDirPath(ClassLoader classLoader,
                                         List<RInnerClass> rInnerClasses,
                                         String resourceDirPath) {
+        System.out.println("loadFromDirPath resourceDirPath = " + resourceDirPath);
+
         File dir = new File(resourceDirPath);
+        System.out.println("loadFromDirPath resourceDirPath File = " + dir.getAbsolutePath());
         File[] files = dir.listFiles();
 
         if (ArrayUtils.isEmpty(files)) return;
@@ -58,12 +63,17 @@ final class StringInnerResourceClassLoader {
                              List<RInnerClass> rInnerClasses,
                              String resourceFilePath
     ) {
+        if (rInnerClasses.stream().anyMatch(rInnerClass -> rInnerClass.getName().equals(ResourceType.STRING.name))) {
+            return;
+        }
+
         Properties properties = new Properties();
         try {
             // "values/strings/strings.properties"
-            InputStream resourceAsStream = classLoader
-                    .getResourceAsStream(resourceFilePath);
-            properties.load(resourceAsStream);
+//            resourceFilePath = resourceFilePath.split("resources")[1].substring(1);
+            System.out.println("loadFromDirPath resourceFilePath = " + resourceFilePath);
+            InputStream fileInputStream = new FileInputStream(resourceFilePath);
+            properties.load(fileInputStream);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -75,7 +85,9 @@ final class StringInnerResourceClassLoader {
             Map<Object, Object> fields = new HashMap<>();
             Set<Map.Entry<Object, Object>> entries = properties.entrySet();
             for (Map.Entry<Object, Object> entry : entries) {
-                fields.put(entry.getKey(), entry.getValue());
+                if (!fields.containsKey(entry.getKey())) {
+                    fields.put(entry.getKey(), entry.getValue());
+                }
             }
             rInnerClass.setFields(fields);
             rInnerClasses.add(rInnerClass);

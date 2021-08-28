@@ -6,7 +6,7 @@ public class HelloController extends BaseHelloViewController {
 
     @FXML
     protected void onHelloButtonClick() {
-        welcomeText.setText(R.string.description);
+//        welcomeText.setText(R.string.description);
     }
 
 }

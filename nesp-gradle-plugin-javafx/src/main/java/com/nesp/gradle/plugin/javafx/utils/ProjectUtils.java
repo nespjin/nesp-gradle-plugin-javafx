@@ -67,8 +67,8 @@ public class ProjectUtils {
     /**
      * Create a new classloader to load project classes and dependencies classes.
      *
-     * @return The new ClassLoader.
      * @param project project
+     * @return The new ClassLoader.
      */
     public static ClassLoader createClassLoader(Project project) {
         var refClasspath = new Object() {
@@ -84,7 +84,6 @@ public class ProjectUtils {
         refClasspath.classpath = refClasspath.classpath.plus(
                 project.getTasks().getByName("jar").getOutputs().getFiles());
 
-
         refClasspath.classpath = refClasspath.classpath.plus(
                 project.getTasks().getByName("classes").getOutputs().getFiles());
 
@@ -94,6 +93,7 @@ public class ProjectUtils {
         for (int i = 0; i < classpathFileArray.length; i++) {
             try {
                 urls[i] = classpathFileArray[i].toURI().toURL();
+                System.out.println(urls[i]);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
