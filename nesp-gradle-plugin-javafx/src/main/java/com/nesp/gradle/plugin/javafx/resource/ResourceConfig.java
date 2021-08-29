@@ -38,40 +38,42 @@ public class ResourceConfig {
     }
 
     public List<String> getStringSrcDirs(final Project project) {
-        return ListUtils.prefix(ListUtils
-                .ifEmpty(mStringSrcDirs, DEFAULT_RESOURCE_DIR_PATH_STRING), pathPrefix(project));
+        return getResourceSrcDirs(project, mStringSrcDirs, DEFAULT_RESOURCE_DIR_PATH_STRING);
     }
 
     public void setStringSrcDirs(List<String> stringSrcDirs) {
         mStringSrcDirs = stringSrcDirs;
     }
 
-    public List<String> getDrawableSrcDirs() {
-        return ListUtils.ifEmpty(mDrawableSrcDirs, DEFAULT_RESOURCE_DIR_PATH_DRAWABLE);
+    public List<String> getDrawableSrcDirs(final Project project) {
+        return getResourceSrcDirs(project, mDrawableSrcDirs, DEFAULT_RESOURCE_DIR_PATH_DRAWABLE);
     }
 
     public void setDrawableSrcDirs(List<String> drawableSrcDirs) {
         mDrawableSrcDirs = drawableSrcDirs;
     }
 
-    public List<String> getLayoutSrcDirs() {
-        return ListUtils.ifEmpty(mLayoutSrcDirs, DEFAULT_RESOURCE_DIR_PATH_LAYOUT);
+    public List<String> getLayoutSrcDirs(final Project project) {
+        return getResourceSrcDirs(project, mLayoutSrcDirs, DEFAULT_RESOURCE_DIR_PATH_LAYOUT);
     }
 
     public void setLayoutSrcDirs(List<String> layoutSrcDirs) {
         mLayoutSrcDirs = layoutSrcDirs;
     }
 
-    public List<String> getAssetsSrcDirs() {
-        return ListUtils.ifEmpty(mAssetsSrcDirs, DEFAULT_RESOURCE_DIR_PATH_ASSETS);
+    public List<String> getAssetsSrcDirs(final Project project) {
+        return getResourceSrcDirs(project, mAssetsSrcDirs, DEFAULT_RESOURCE_DIR_PATH_ASSETS);
     }
 
     public void setAssetsSrcDirs(List<String> assetsSrcDirs) {
         mAssetsSrcDirs = assetsSrcDirs;
     }
 
-    private static String getRealPath(final Project project, final String path) {
-        return pathPrefix(project).concat(path);
+    private List<String> getResourceSrcDirs(final Project project,
+                                            final List<String> resourceSrcDirs,
+                                            final String defaultResourceDirPath) {
+        return ListUtils.prefix(ListUtils
+                .ifEmpty(resourceSrcDirs, defaultResourceDirPath), pathPrefix(project));
     }
 
     private static String pathPrefix(final Project project) {

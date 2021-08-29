@@ -25,7 +25,7 @@ import java.io.InputStream;
 import java.util.*;
 
 final class StringInnerResourceClassLoader {
-    private static final String STRING_RES_FILE_EXTENSION = "properties";
+    private static final String STRING_RES_FILE_EXTENSION = ".properties";
 
     private StringInnerResourceClassLoader() {
     }

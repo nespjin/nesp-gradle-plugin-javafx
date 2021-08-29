@@ -47,6 +47,9 @@ public abstract class GenerateRClassFileTask extends BaseTask {
         StringInnerResourceClassLoader.loadFromDirPaths(classLoader, rInnerClasses,
                 mResourceConfig.getStringSrcDirs(project));
 
+        LayoutInnerResourceClassLoader.loadFromDirPaths(classLoader, rInnerClasses,
+                mResourceConfig.getLayoutSrcDirs(project));
+
         new RClassGenerate(desFile, packageName, rInnerClasses).generate();
     }
 
