@@ -21,6 +21,7 @@ import com.nesp.gradle.plugin.javafx.fxml.GenerateBaseControllerClassFileTask;
 import com.nesp.gradle.plugin.javafx.resource.GenerateRClassFileTask;
 import com.nesp.gradle.plugin.javafx.resource.ResourceConfig;
 import com.nesp.gradle.plugin.javafx.utils.ProjectUtils;
+import org.apache.tools.ant.util.FileUtils;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
@@ -58,6 +59,13 @@ public class JavaFxPlugin implements Plugin<Project> {
             if (project1.getPlugins().hasPlugin(JavaPlugin.class)) {
                 final File desFile = new File(ProjectUtils.getGenerateSourcePath(project));
 
+                // Clear all pre generated
+                if (desFile.isFile()) {
+                    FileUtils.delete(desFile);
+                } else {
+                    deleteDirectory(desFile);
+                }
+
                 JavaPluginExtension javaPluginExtension =
                         project1.getExtensions().findByType(JavaPluginExtension.class);
                 if (javaPluginExtension != null) {
@@ -76,10 +84,22 @@ public class JavaFxPlugin implements Plugin<Project> {
                             .getByName("main")
                             .getJava()
                             .setSrcDirs(mainSrcDirs);
-
                 }
             }
         });
+    }
+
+    private void deleteDirectory(final File desFile) {
+        final File[] files = desFile.listFiles();
+        if (files != null) {
+            for (final File file : files) {
+                if (file.isFile()) {
+                    final boolean _d = file.delete();
+                } else {
+                    deleteDirectory(file);
+                }
+            }
+        }
     }
 
     private void configureNespJavaFxPluginExtension(Project project) {
