@@ -99,6 +99,9 @@ public class JavaFxPlugin implements Plugin<Project> {
                     deleteDirectory(file);
                 }
             }
+            if (desFile.listFiles() == null || desFile.listFiles().length == 0) {
+                desFile.delete();
+            }
         }
     }
 

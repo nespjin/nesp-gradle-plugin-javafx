@@ -27,11 +27,13 @@ public class ResourceConfig {
     public static final String DEFAULT_RESOURCE_DIR_PATH_ASSETS = "assets";
     public static final String DEFAULT_RESOURCE_DIR_PATH_DRAWABLE = "drawable";
     public static final String DEFAULT_RESOURCE_DIR_PATH_LAYOUT = "layout";
+    public static final String DEFAULT_RESOURCE_DIR_PATH_STYLE = "style";
 
     private List<String> mStringSrcDirs;
     private List<String> mDrawableSrcDirs;
     private List<String> mLayoutSrcDirs;
     private List<String> mAssetsSrcDirs;
+    private List<String> mStyleSrcDirs;
 
     public static ResourceConfig getDefault() {
         return new ResourceConfig();
@@ -51,6 +53,14 @@ public class ResourceConfig {
 
     public void setDrawableSrcDirs(List<String> drawableSrcDirs) {
         mDrawableSrcDirs = drawableSrcDirs;
+    }
+
+    public List<String> getStyleSrcDirs(final Project project) {
+        return getResourceSrcDirs(project, mStyleSrcDirs, DEFAULT_RESOURCE_DIR_PATH_STYLE);
+    }
+
+    public void setStyleSrcDirs(List<String> styleSrcDirs) {
+        mDrawableSrcDirs = styleSrcDirs;
     }
 
     public List<String> getLayoutSrcDirs(final Project project) {
