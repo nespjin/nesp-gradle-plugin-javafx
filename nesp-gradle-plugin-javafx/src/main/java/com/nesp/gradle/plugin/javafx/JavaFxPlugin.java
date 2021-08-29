@@ -59,12 +59,12 @@ public class JavaFxPlugin implements Plugin<Project> {
             if (project1.getPlugins().hasPlugin(JavaPlugin.class)) {
                 final File desFile = new File(ProjectUtils.getGenerateSourcePath(project));
 
-                // Clear all pre generated
+         /*       // Clear all pre generated
                 if (desFile.isFile()) {
                     FileUtils.delete(desFile);
                 } else {
                     deleteDirectory(desFile);
-                }
+                }*/
 
                 JavaPluginExtension javaPluginExtension =
                         project1.getExtensions().findByType(JavaPluginExtension.class);
