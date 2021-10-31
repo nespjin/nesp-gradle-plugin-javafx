@@ -24,9 +24,7 @@ import javax.xml.stream.util.StreamReaderDelegate;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.AccessController;
 import java.security.BasicPermission;
-import java.security.PrivilegedAction;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -65,9 +63,11 @@ public class FXMLParser {
     protected static ClassLoader sDefaultClassLoader = null;
 
     // Instance of StackWalker used to get caller class (must be private)
+//    private static final StackWalker WALKER =
+//            AccessController.doPrivileged((PrivilegedAction<StackWalker>) () ->
+//                    StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE));
     private static final StackWalker WALKER =
-            AccessController.doPrivileged((PrivilegedAction<StackWalker>) () ->
-                    StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE));
+            StackWalker.getInstance(StackWalker.Option.RETAIN_CLASS_REFERENCE);
 
     protected File mFXMLFile;
 
@@ -195,12 +195,14 @@ public class FXMLParser {
     private void processProcessingInstruction() throws FXMLParseException {
         String piTarget = mXMLStreamReader.getPITarget().trim();
 
-        if (piTarget.equals(LANGUAGE_PROCESSING_INSTRUCTION)) {
-            /* do nothing */
-        } else if (piTarget.equals(IMPORT_PROCESSING_INSTRUCTION)) {
-            processImport();
-        } else if (piTarget.equals(COMPILE_PROCESSING_INSTRUCTION)) {
-            /* do nothing */
+        switch (piTarget) {
+            case LANGUAGE_PROCESSING_INSTRUCTION:
+            case COMPILE_PROCESSING_INSTRUCTION:
+                /* do nothing */
+                break;
+            case IMPORT_PROCESSING_INSTRUCTION:
+                processImport();
+                break;
         }
     }
 
@@ -295,21 +297,21 @@ public class FXMLParser {
     }
 
 
-    private static boolean needsClassLoaderPermissionCheck(Class caller) {
+    private static boolean needsClassLoaderPermissionCheck(Class<?> caller) {
         if (caller == null) {
             return false;
         }
         return !FXMLParser.class.getModule().equals(caller.getModule());
     }
 
-    private static ClassLoader getDefaultClassLoader(Class caller) {
+    private static ClassLoader getDefaultClassLoader(Class<?> caller) {
         if (sDefaultClassLoader == null) {
-            final SecurityManager sm = System.getSecurityManager();
-            if (sm != null) {
-                if (needsClassLoaderPermissionCheck(caller)) {
-                    sm.checkPermission(new Permission(("modifyFXMLClassLoader")));
-                }
-            }
+//            final SecurityManager sm = System.getSecurityManager();
+//            if (sm != null) {
+//                if (needsClassLoaderPermissionCheck(caller)) {
+//                    sm.checkPermission(new Permission(("modifyFXMLClassLoader")));
+//                }
+//            }
             return Thread.currentThread().getContextClassLoader();
         }
         return sDefaultClassLoader;
@@ -322,20 +324,20 @@ public class FXMLParser {
     }
 
     public static ClassLoader getDefaultClassLoader() {
-        final SecurityManager sm = System.getSecurityManager();
-        final Class caller = (sm != null) ?
-                WALKER.getCallerClass() :
-                null;
-        return getDefaultClassLoader(caller);
+//        final SecurityManager sm = System.getSecurityManager();
+//        final Class caller = (sm != null) ?
+//                WALKER.getCallerClass() :
+//                null;
+        return getDefaultClassLoader(WALKER.getCallerClass());
     }
 
     public ClassLoader getClassLoader() {
         if (mClassLoader == null) {
-            final SecurityManager sm = System.getSecurityManager();
-            final Class caller = (sm != null) ?
-                    WALKER.getCallerClass() :
-                    null;
-            return getDefaultClassLoader(caller);
+//            final SecurityManager sm = System.getSecurityManager();
+//            final Class caller = (sm != null) ?
+//                    WALKER.getCallerClass() :
+//                    null;
+            return getDefaultClassLoader(WALKER.getCallerClass());
         }
         return mClassLoader;
     }

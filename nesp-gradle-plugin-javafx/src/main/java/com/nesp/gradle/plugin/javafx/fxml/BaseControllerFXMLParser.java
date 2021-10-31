@@ -57,12 +57,12 @@ public final class BaseControllerFXMLParser extends FXMLParser {
 
     @Override
     protected void onPostParse() {
-        final ClassMethod classMethod = new ClassMethod();
+  /*      final ClassMethod classMethod = new ClassMethod();
         classMethod.setName("initialize");
         classMethod.setModifier(Modifier.PUBLIC);
         classMethod.setReturnType(void.class);
         mBaseControllerClass.getClassMethods()
-                .add(classMethod);
+                .add(classMethod);*/
 
         final ClassMethod classMethod2 = new ClassMethod();
         classMethod2.setName("initialize");
@@ -117,15 +117,16 @@ public final class BaseControllerFXMLParser extends FXMLParser {
         }
         StringBuilder nameRegular = new StringBuilder();
         for (int i = 0; i < name.length(); i++) {
+            final String upperCaseChar = String.valueOf(name.charAt(i)).toUpperCase(Locale.ROOT);
             if (i == 0) {
-                nameRegular = new StringBuilder(String.valueOf(name.charAt(i)).toUpperCase(Locale.ROOT));
+                nameRegular = new StringBuilder(upperCaseChar);
                 continue;
             }
 
             if (name.charAt(i) == '_' || name.charAt(i) == '-') continue;
 
             if (name.charAt(i - 1) == '_' || name.charAt(i - 1) == '-') {
-                nameRegular.append(String.valueOf(name.charAt(i)).toUpperCase(Locale.ROOT));
+                nameRegular.append(upperCaseChar);
                 continue;
             }
 

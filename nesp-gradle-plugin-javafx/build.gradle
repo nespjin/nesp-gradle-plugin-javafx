@@ -36,7 +36,7 @@ pluginBundle {
 }
 
 group 'com.nesp'
-version '1.0'
+version '1.1'
 
 gradlePlugin {
     plugins {
@@ -56,17 +56,17 @@ repositories {
 dependencies {
     implementation 'com.squareup:javapoet:1.13.0'
 
-    implementation 'org.openjfx:javafx-controls:16'
-    implementation 'org.openjfx:javafx-graphics:16'
-    implementation 'org.openjfx:javafx-fxml:16'
+    implementation 'org.openjfx:javafx-controls:17.0.0.1'
+    implementation 'org.openjfx:javafx-graphics:17.0.0.1'
+    implementation 'org.openjfx:javafx-fxml:17.0.0.1'
 
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
 }
 
 test {
     javafx {
-        version = "16"
+        version = "17"
         modules = ['javafx.controls', 'javafx.fxml', 'javafx.graphics']
     }
     useJUnitPlatform()
