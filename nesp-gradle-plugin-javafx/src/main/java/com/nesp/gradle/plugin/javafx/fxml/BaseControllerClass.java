@@ -25,7 +25,7 @@ import java.util.List;
  * Project: nesp-gradle-plugin-javafx
  * Description:
  **/
-@SuppressWarnings("UnusedReturnValue")
+@SuppressWarnings("UnusedReturnValue, NeverUsed")
 public final class BaseControllerClass {
 
     private static final String TAG = "BaseControllerClass";
