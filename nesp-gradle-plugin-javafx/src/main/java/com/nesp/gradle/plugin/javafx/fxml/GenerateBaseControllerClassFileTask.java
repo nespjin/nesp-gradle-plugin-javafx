@@ -17,7 +17,7 @@
 package com.nesp.gradle.plugin.javafx.fxml;
 
 import com.nesp.gradle.plugin.javafx.BaseTask;
-import com.nesp.gradle.plugin.javafx.utils.ProjectUtils;
+import com.nesp.gradle.plugin.javafx.JavaFxPlugin;
 import com.squareup.javapoet.*;
 import javafx.fxml.FXML;
 import org.gradle.api.Project;
@@ -33,6 +33,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
+    private static final String TAG = "GenerateBaseControllerClassFileTask";
 
     private static final String[] SUPPORT_FILE_TYPES = new String[]{
             ".fxml"
@@ -56,6 +57,7 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
 
         final List<File> fxmlFiles = scanProjectFxmlFiles(project);
         Type baseControllerSuperClass = null;
+
         if (!baseControllerSuperClassName.isEmpty()) {
             try {
                 baseControllerSuperClass = classLoader.loadClass(baseControllerSuperClassName);
@@ -143,7 +145,9 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
             JavaFile.Builder javaFileBuilder = JavaFile.builder(packageName, classBuilder.build());
             File file = new File(desFile.getAbsolutePath());
             if (!file.getParentFile().exists()) {
-                file.getParentFile().mkdirs();
+                if (!file.getParentFile().mkdirs()) {
+                    JavaFxPlugin.printLog(TAG, "file's parent create failed");
+                }
             }
             try {
                 javaFileBuilder.build().writeTo(file);

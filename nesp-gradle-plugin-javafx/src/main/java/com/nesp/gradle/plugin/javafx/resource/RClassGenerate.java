@@ -16,6 +16,7 @@
 
 package com.nesp.gradle.plugin.javafx.resource;
 
+import com.nesp.gradle.plugin.javafx.JavaFxPlugin;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeSpec;
@@ -28,6 +29,7 @@ import java.util.Map;
 import java.util.Set;
 
 public final class RClassGenerate {
+    private static final String TAG = "RClassGenerate";
 
     private static final String R_CLASS_NAME = "R";
 
@@ -48,7 +50,8 @@ public final class RClassGenerate {
                 .addModifiers(Modifier.PUBLIC)
                 .addModifiers(Modifier.FINAL);
 
-        System.out.println("mRInnerClasses = " + mRInnerClasses);
+        JavaFxPlugin.printDebugLog("mRInnerClasses", String.valueOf(mRInnerClasses));
+
         if (mRInnerClasses != null && !mRInnerClasses.isEmpty()) {
             for (RInnerClass rInnerClass : mRInnerClasses) {
                 rClassBuilder.addType(buildRInnerClassTypeSpec(rInnerClass));
@@ -58,7 +61,9 @@ public final class RClassGenerate {
         JavaFile.Builder javaFileBuilder = JavaFile.builder(mPackageName, rClassBuilder.build());
         File file = new File(mSourceDir.getAbsolutePath());
         if (!file.getParentFile().exists()) {
-            file.getParentFile().mkdirs();
+            if (!file.getParentFile().mkdirs()) {
+                JavaFxPlugin.printLog(TAG, "R class file parent create failed");
+            }
         }
         try {
             javaFileBuilder.build().writeTo(file);

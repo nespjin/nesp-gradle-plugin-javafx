@@ -1,6 +1,7 @@
 package com.nesp.gradle.plugin.javafx.utils;
 
 import org.gradle.api.Project;
+import org.gradle.api.Task;
 import org.gradle.api.file.FileCollection;
 import org.gradle.api.plugins.*;
 import org.gradle.api.provider.Property;
@@ -10,8 +11,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Utility class for project.
@@ -78,31 +78,45 @@ public class ProjectUtils {
         project.getTasksByName("compileJava", true)
                 .forEach(task -> {
                     JavaCompile javaCompileTask = (JavaCompile) task;
-                    refClasspath.classpath = refClasspath.classpath.plus(javaCompileTask.getClasspath());
+                    final FileCollection classpath = javaCompileTask.getClasspath();
+                    final FileCollection outputs = javaCompileTask.getOutputs().getFiles();
+                    refClasspath.classpath = refClasspath.classpath.plus(classpath);
+                    refClasspath.classpath = refClasspath.classpath.plus(outputs);
                 });
 
         refClasspath.classpath = refClasspath.classpath.plus(
                 project.getTasks().getByName("jar").getOutputs().getFiles());
 
-        refClasspath.classpath = refClasspath.classpath.plus(
-                project.getTasks().getByName("classes").getOutputs().getFiles());
+        final Task task = project.getTasks().getByName("classes");
+        refClasspath.classpath = refClasspath.classpath.plus(task.getOutputs().getFiles());
 
         Set<File> classpathFiles = refClasspath.classpath.getFiles();
-        URL[] urls = new URL[classpathFiles.size()];
+        Set<URL> urls = new HashSet<>();
+
         File[] classpathFileArray = classpathFiles.toArray(new File[0]);
-        for (int i = 0; i < classpathFileArray.length; i++) {
+        for (final File file : classpathFileArray) {
             try {
-                urls[i] = classpathFileArray[i].toURI().toURL();
+                urls.add(file.toURI().toURL());
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
         }
 
+//        Arrays.stream(urls).forEach(url -> JavaFxPlugin.printDebugLog("ClassPath", String.valueOf(url)));
 
-        return new URLClassLoader(urls, Thread.currentThread().getContextClassLoader());
+        URL[] urlArray = new URL[urls.size()];
+        final List<URL> urlList = urls.stream().toList();
+        for (int i = 0; i < urlList.size(); i++) {
+            urlArray[i] = urlList.get(i);
+        }
+        return new URLClassLoader(urlArray, Thread.currentThread().getContextClassLoader());
     }
 
     public static String getGenerateSourcePath(Project project) {
         return project.getBuildDir() + "/generated/sources/javafx/src/main/java";
+    }
+
+    public static String getDefaultClassesPath(Project project) {
+        return project.getBuildDir() + "classes";
     }
 }

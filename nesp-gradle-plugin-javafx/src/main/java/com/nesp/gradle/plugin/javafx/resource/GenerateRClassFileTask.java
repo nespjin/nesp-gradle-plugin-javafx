@@ -23,7 +23,9 @@ import org.gradle.internal.impldep.org.eclipse.jgit.annotations.NonNull;
 
 import javax.inject.Inject;
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 public abstract class GenerateRClassFileTask extends BaseTask {
 
