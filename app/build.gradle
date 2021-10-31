@@ -12,7 +12,7 @@ version '1.0-SNAPSHOT'
 nespJfx {
     baseControllerOptions {
         enable = true
-//        superClass = "com.nesp.plugin.app.BaseController"
+        superClass = "com.nesp.plugin.app.BaseController"
         interfaces = ["javafx.fxml.Initializable"]
     }
 }
@@ -21,8 +21,8 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = "17"
-targetCompatibility = "17"
+sourceCompatibility = "16"
+targetCompatibility = "16"
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
