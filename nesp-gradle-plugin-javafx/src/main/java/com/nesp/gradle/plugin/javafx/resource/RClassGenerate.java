@@ -16,6 +16,7 @@
 
 package com.nesp.gradle.plugin.javafx.resource;
 
+import com.nesp.gradle.plugin.javafx.Config;
 import com.nesp.gradle.plugin.javafx.JavaFxPlugin;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.JavaFile;
@@ -59,6 +60,7 @@ public final class RClassGenerate {
         }
 
         JavaFile.Builder javaFileBuilder = JavaFile.builder(mPackageName, rClassBuilder.build());
+        javaFileBuilder.addFileComment(Config.CLASS_LICENSE_COMMENT);
         File file = new File(mSourceDir.getAbsolutePath());
         if (!file.getParentFile().exists()) {
             if (!file.getParentFile().mkdirs()) {

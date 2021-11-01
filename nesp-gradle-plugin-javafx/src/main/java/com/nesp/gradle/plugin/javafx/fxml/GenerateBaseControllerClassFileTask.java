@@ -17,6 +17,7 @@
 package com.nesp.gradle.plugin.javafx.fxml;
 
 import com.nesp.gradle.plugin.javafx.BaseTask;
+import com.nesp.gradle.plugin.javafx.Config;
 import com.nesp.gradle.plugin.javafx.JavaFxPlugin;
 import com.nesp.gradle.plugin.javafx.reflect.MethodExecutableElement;
 import com.squareup.javapoet.*;
@@ -208,6 +209,7 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
             }
 
             JavaFile.Builder javaFileBuilder = JavaFile.builder(packageName, classBuilder.build());
+            javaFileBuilder.addFileComment(Config.CLASS_LICENSE_COMMENT);
             File file = new File(desFile.getAbsolutePath());
             if (!file.getParentFile().exists()) {
                 if (!file.getParentFile().mkdirs()) {
