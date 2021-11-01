@@ -175,14 +175,18 @@ public class JavaFxPlugin implements Plugin<Project> {
                 Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
                 if (!compileJavaTasks.isEmpty()) {
                     JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
-                    compileJavaTask.doLast(new Action<Task>() {
+                    final Action<Task> taskAction = new Action<>() {
                         @Override
                         public void execute(@Nonnull final Task task1) {
                             if (baseControllerEnable) {
                                 generateBaseControllerClassFileTask.run();
                             }
                         }
-                    });
+                    };
+
+                    // exec twice.
+                    compileJavaTask.doFirst(taskAction);
+                    compileJavaTask.doLast(taskAction);
                 }
             }
         });
