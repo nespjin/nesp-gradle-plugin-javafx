@@ -74,7 +74,6 @@ public final class BaseControllerFXMLParser extends FXMLParser {
         params.add(new ClassMethod.Param(ResourceBundle.class, "resources"));
         classMethod2.setParams(params);
 
-        classMethod2.setOverride(true);
         mBaseControllerClass.getClassMethods().add(classMethod2);
 
         List<ClassField> fieldsNeedRemoved = new LinkedList<>();

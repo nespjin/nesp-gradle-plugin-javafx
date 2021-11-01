@@ -8,7 +8,7 @@
         <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
-        <option name="gradleJvm" value="16" />
+        <option name="gradleJvm" value="openjdk-16" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
@@ -27,8 +27,11 @@
             </builds>
           </compositeBuild>
         </compositeConfiguration>
+        <option name="delegatedBuild" value="true" />
+        <option name="testRunner" value="GRADLE" />
         <option name="distributionType" value="DEFAULT_WRAPPED" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/app" />
+        <option name="gradleJvm" value="openjdk-17" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/app" />

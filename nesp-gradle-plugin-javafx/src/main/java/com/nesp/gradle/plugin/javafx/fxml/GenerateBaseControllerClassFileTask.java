@@ -20,9 +20,11 @@ import com.nesp.gradle.plugin.javafx.BaseTask;
 import com.nesp.gradle.plugin.javafx.JavaFxPlugin;
 import com.nesp.gradle.plugin.javafx.reflect.MethodExecutableElement;
 import com.squareup.javapoet.*;
+import groovyjarjarantlr4.v4.codegen.model.decl.CodeBlock;
 import javafx.fxml.FXML;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
+import org.gradle.internal.impldep.org.apache.http.util.TextUtils;
 
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
@@ -140,7 +142,10 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
                     for (int i = 0, paramsSize = params.size(); i < paramsSize; i++) {
                         final ClassMethod.Param param = params.get(i);
                         try {
-                            paramClasses[i] = Class.forName(param.getTypeName());
+                            final String className = param.getType().getTypeName();
+                            if (className != null && !className.isEmpty()) {
+                                paramClasses[i] = Class.forName(className);
+                            }
                         } catch (ClassNotFoundException e) {
                             e.printStackTrace();
                         }
@@ -149,20 +154,40 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
                         methodBuilder.addParameter(parameterSpec);
                     }
                 }
-                methodBuilder.returns(classMethod.getReturnType());
 
-                if (classMethod.isOverride() && baseControllerSuperClass != null) {
+                final StringBuilder methodString = new StringBuilder(classMethod.getName() + "(");
+                if (params != null && !params.isEmpty()) {
+                    for (int i = 0, paramsSize = params.size(); i < paramsSize; i++) {
+                        final ClassMethod.Param param = params.get(i);
+                        if (i != 0) {
+                            methodString.append(",");
+                        }
+                        methodString.append(param.getName());
+                    }
+                }
+                methodString.append(")");
+
+                if (baseControllerSuperClass != null) {
+                    final Class<?> baseControllerSuperClass1 = (Class<?>) baseControllerSuperClass;
+                    Method method = null;
                     try {
-                        final Class<?> baseControllerSuperClass1 = (Class<?>) baseControllerSuperClass;
-                        final Method method = baseControllerSuperClass1
+                        method = baseControllerSuperClass1
                                 .getDeclaredMethod(classMethod.getName(), paramClasses);
+                    } catch (NoSuchMethodException | SecurityException e) {
+                        JavaFxPlugin.printLog(TAG, "method " + methodString
+                                + " not found in " + baseControllerSuperClass);
+                    }
 
-                        MethodSpec.overriding(new MethodExecutableElement(method));
-                    } catch (NoSuchMethodException e) {
-                        e.printStackTrace();
+                    if (method != null) {
+                        // Found super method, add override code
+                        // TODO: Replace with MethodSpec.override(method)
+                        methodBuilder.addAnnotation(Override.class);
+                        methodBuilder.addCode("super." + methodString + ";");
                     }
 
                 }
+
+                methodBuilder.returns(classMethod.getReturnType());
                 classBuilder.addMethod(methodBuilder.build());
             }
 

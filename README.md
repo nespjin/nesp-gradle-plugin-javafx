@@ -3,15 +3,26 @@ JavaFx Gradle Plugin
 
 配合[nesp-sdk-javafx](https://github.com/nespjin/nesp-sdk-javafx)使用，开发JavaFx就像开发Android一样简单。
 
-## 前提
-需要使用：gradle-7.1
+
+## 提示
+该项目仍在开发验证阶段
+
+参与项目开发请加群428741525联系群主
+
+## 开发环境
+- Gradle: Gradle-7.2
+- Java: OpenJdk-17
 
 ## 功能特性
 
 1. 自动生成BaseController类
    可根据FXML界面布局文件生成BaseController，BaseController包含布局界面控件的Id映射。
 2. 自动生成R类
-   配合[nesp-sdk-javafx](https://github.com/nespjin/nesp-sdk-javafx)的```Context.getRespource()``` 可以更方便引用资源。例如： ```Context.getResource().getString(R.string.name)```
+> 目前已经实现:
+> - R.string
+> - R.layout
+  
+配合[nesp-sdk-javafx](https://github.com/nespjin/nesp-sdk-javafx)的```Context.getRespource()``` 可以更方便引用资源。例如： ```Context.getResource().getString(R.string.name)```
 
 ## 安装
 

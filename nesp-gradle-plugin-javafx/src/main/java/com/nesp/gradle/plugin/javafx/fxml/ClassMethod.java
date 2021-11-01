@@ -35,7 +35,6 @@ public final class ClassMethod {
     private String returnTypeName;
     private Type returnType;
     private List<Param> params;
-    private boolean isOverride;
 
     public String getName() {
         return name;
@@ -75,14 +74,6 @@ public final class ClassMethod {
 
     public void setParams(List<Param> params) {
         this.params = params;
-    }
-
-    public void setOverride(final boolean override) {
-        isOverride = override;
-    }
-
-    public boolean isOverride() {
-        return isOverride;
     }
 
     public static class Param {

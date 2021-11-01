@@ -2,7 +2,7 @@ package com.nesp.plugin.app;
 
 import javafx.fxml.FXML;
 
-public class HelloController extends BaseHelloViewController {
+public class HelloController  {
 
     @FXML
     protected void onHelloButtonClick() {

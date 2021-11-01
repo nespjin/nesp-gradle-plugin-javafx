@@ -21,6 +21,7 @@ import com.nesp.gradle.plugin.javafx.fxml.GenerateBaseControllerClassFileTask;
 import com.nesp.gradle.plugin.javafx.resource.GenerateRClassFileTask;
 import com.nesp.gradle.plugin.javafx.resource.ResourceConfig;
 import com.nesp.gradle.plugin.javafx.utils.ProjectUtils;
+import org.apache.tools.ant.util.FileUtils;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -37,6 +38,8 @@ import java.util.Optional;
 import java.util.Set;
 
 public class JavaFxPlugin implements Plugin<Project> {
+
+    private static final String TAG = "JavaFxPlugin";
 
     public static final boolean DEBUG = false;
 
@@ -65,10 +68,23 @@ public class JavaFxPlugin implements Plugin<Project> {
 
     @Override
     public void apply(@Nonnull Project project) {
+        preClear(project);
         configureSourceSetGenerateFileOutputs(project);
         configureNespJavaFxPluginExtension(project);
         configureGenerateBaseControllerFileTask(project);
         configureGenerateRFileTask(project);
+    }
+
+
+    private void preClear(final Project project) {
+//        final File desFile = new File(ProjectUtils.getGenerateSourcePath(project));
+//
+//        // Clear all pre generated
+//        if (desFile.isFile()) {
+//            FileUtils.delete(desFile);
+//        } else {
+//            deleteDirectory(desFile);
+//        }
     }
 
     /**
@@ -86,13 +102,6 @@ public class JavaFxPlugin implements Plugin<Project> {
             public void execute(@Nonnull final Project project1) {
                 if (project1.getPlugins().hasPlugin(JavaPlugin.class)) {
                     final File desFile = new File(ProjectUtils.getGenerateSourcePath(project));
-
-         /*       // Clear all pre generated
-                if (desFile.isFile()) {
-                    FileUtils.delete(desFile);
-                } else {
-                    deleteDirectory(desFile);
-                }*/
 
                     JavaPluginExtension javaPluginExtension =
                             project1.getExtensions().findByType(JavaPluginExtension.class);
@@ -125,15 +134,11 @@ public class JavaFxPlugin implements Plugin<Project> {
             for (final File file : files) {
                 if (file.isFile()) {
                     if (!file.delete()) {
-                        printLog("deleteDirectory", "file " + file + " delete failed");
+                        printLog(TAG, "file " + file + " delete failed");
                     }
                 } else {
                     deleteDirectory(file);
                 }
-            }
-        } else {
-            if (!desFile.delete()) {
-                printLog("deleteDirectory", "file " + desFile + " delete failed");
             }
         }
     }
@@ -170,7 +175,7 @@ public class JavaFxPlugin implements Plugin<Project> {
                 Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
                 if (!compileJavaTasks.isEmpty()) {
                     JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
-                    compileJavaTask.doFirst(new Action<Task>() {
+                    compileJavaTask.doLast(new Action<Task>() {
                         @Override
                         public void execute(@Nonnull final Task task1) {
                             if (baseControllerEnable) {

@@ -19,7 +19,7 @@ package com.nesp.gradle.plugin.javafx.reflect;
 import javax.lang.model.element.*;
 import javax.lang.model.type.TypeMirror;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,16 +27,18 @@ import java.util.Set;
 /**
  * Team: NESP Technology
  * Author: <a href="mailto:1756404649@qq.com">JinZhaolu Email:1756404649@qq.com</a>
- * Time: Created 2021/11/1 2:39
+ * Time: Created 2021/11/1 上午11:23
  * Project: nesp-gradle-plugin-javafx
  * Description:
  **/
-public class MethodExecutableElement implements ExecutableElement {
+public class ParameterVariableElement implements VariableElement {
 
-    private final Method mMethod;
+    private static final String TAG = "ParameterVariableElement";
 
-    public MethodExecutableElement(final Method method) {
-        mMethod = method;
+    private final Parameter mParameter;
+
+    public ParameterVariableElement(final Parameter parameter) {
+        mParameter = parameter;
     }
 
     @Override
@@ -46,93 +48,56 @@ public class MethodExecutableElement implements ExecutableElement {
 
     @Override
     public ElementKind getKind() {
-        return ElementKind.METHOD;
+        return ElementKind.PARAMETER;
     }
 
     @Override
-    @SuppressWarnings("all")
     public Set<Modifier> getModifiers() {
-        Set<Modifier> modifiers = new HashSet<>();
-        if (java.lang.reflect.Modifier.isPublic(mMethod.getModifiers())) {
+        final Set<Modifier> modifiers = new HashSet<>();
+        if (java.lang.reflect.Modifier.isPublic(mParameter.getModifiers())) {
             modifiers.add(Modifier.PUBLIC);
         }
-        if (java.lang.reflect.Modifier.isProtected(mMethod.getModifiers())) {
+        if (java.lang.reflect.Modifier.isProtected(mParameter.getModifiers())) {
             modifiers.add(Modifier.PROTECTED);
         }
-        if (java.lang.reflect.Modifier.isPrivate(mMethod.getModifiers())) {
+        if (java.lang.reflect.Modifier.isPrivate(mParameter.getModifiers())) {
             modifiers.add(Modifier.PRIVATE);
         }
-        if (java.lang.reflect.Modifier.isAbstract(mMethod.getModifiers())) {
+        if (java.lang.reflect.Modifier.isAbstract(mParameter.getModifiers())) {
             modifiers.add(Modifier.ABSTRACT);
         }
-        if (java.lang.reflect.Modifier.isStatic(mMethod.getModifiers())) {
+        if (java.lang.reflect.Modifier.isStatic(mParameter.getModifiers())) {
             modifiers.add(Modifier.STATIC);
         }
-        if (java.lang.reflect.Modifier.isFinal(mMethod.getModifiers())) {
+        if (java.lang.reflect.Modifier.isFinal(mParameter.getModifiers())) {
             modifiers.add(Modifier.FINAL);
         }
-        if (java.lang.reflect.Modifier.isTransient(mMethod.getModifiers())) {
+        if (java.lang.reflect.Modifier.isTransient(mParameter.getModifiers())) {
             modifiers.add(Modifier.TRANSIENT);
         }
-        if (java.lang.reflect.Modifier.isVolatile(mMethod.getModifiers())) {
+        if (java.lang.reflect.Modifier.isVolatile(mParameter.getModifiers())) {
             modifiers.add(Modifier.VOLATILE);
         }
-        if (java.lang.reflect.Modifier.isSynchronized(mMethod.getModifiers())) {
+        if (java.lang.reflect.Modifier.isSynchronized(mParameter.getModifiers())) {
             modifiers.add(Modifier.SYNCHRONIZED);
         }
-        if (java.lang.reflect.Modifier.isNative(mMethod.getModifiers())) {
+        if (java.lang.reflect.Modifier.isNative(mParameter.getModifiers())) {
             modifiers.add(Modifier.NATIVE);
         }
-        if (java.lang.reflect.Modifier.isStrict(mMethod.getModifiers())) {
+        if (java.lang.reflect.Modifier.isStrict(mParameter.getModifiers())) {
             modifiers.add(Modifier.STRICTFP);
         }
         return modifiers;
     }
 
     @Override
-    public List<? extends TypeParameterElement> getTypeParameters() {
+    public Object getConstantValue() {
         return null;
-    }
-
-    @Override
-    public TypeMirror getReturnType() {
-        return null;
-    }
-
-    @Override
-    public List<? extends VariableElement> getParameters() {
-        return null;
-
-    }
-
-    @Override
-    public TypeMirror getReceiverType() {
-        return null;
-    }
-
-    @Override
-    public boolean isVarArgs() {
-        return mMethod.isVarArgs();
-    }
-
-    @Override
-    public boolean isDefault() {
-        return mMethod.isDefault();
-    }
-
-    @Override
-    public List<? extends TypeMirror> getThrownTypes() {
-        return null;
-    }
-
-    @Override
-    public AnnotationValue getDefaultValue() {
-        return new SimpleAnnotationValue(mMethod.getDefaultValue());
     }
 
     @Override
     public Name getSimpleName() {
-        return new SimpleName(mMethod.getName());
+        return new SimpleName(mParameter.getName());
     }
 
     @Override
@@ -152,12 +117,12 @@ public class MethodExecutableElement implements ExecutableElement {
 
     @Override
     public <A extends Annotation> A getAnnotation(final Class<A> annotationType) {
-        return mMethod.getAnnotation(annotationType);
+        return null;
     }
 
     @Override
     public <A extends Annotation> A[] getAnnotationsByType(final Class<A> annotationType) {
-        return mMethod.getAnnotationsByType(annotationType);
+        return null;
     }
 
     @Override
