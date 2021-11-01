@@ -33,8 +33,10 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Predicate;
 
 
 public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
@@ -62,10 +64,12 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
 
         final List<File> fxmlFiles = scanProjectFxmlFiles(project);
         Type baseControllerSuperClass = null;
+        Class<?>[] baseControllerClassInterfaces = null;
 
         if (!baseControllerSuperClassName.isEmpty()) {
             try {
                 baseControllerSuperClass = classLoader.loadClass(baseControllerSuperClassName);
+                baseControllerClassInterfaces = ((Class<?>) baseControllerSuperClass).getInterfaces();
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -76,7 +80,19 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
         if (!baseControllerSuperInterfaces.isEmpty()) {
             for (String baseControllerSuperInterfaceName : baseControllerSuperInterfaces) {
                 try {
-                    superInterfaces.add(classLoader.loadClass(baseControllerSuperInterfaceName));
+                    final Class<?> baseControllerSuperInterfaceClass =
+                            classLoader.loadClass(baseControllerSuperInterfaceName);
+                    if (baseControllerSuperClass != null
+                            && baseControllerSuperInterfaceClass != null) {
+                        if (!Arrays.stream(baseControllerClassInterfaces)
+                                .filter(aClass -> aClass == baseControllerSuperInterfaceClass)
+                                .toList().isEmpty()) {
+                            // The base controller class is child of interface, skip it.
+                            continue;
+                        }
+                    }
+
+                    superInterfaces.add(baseControllerSuperInterfaceClass);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
