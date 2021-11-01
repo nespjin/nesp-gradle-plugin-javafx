@@ -18,6 +18,7 @@ package com.nesp.gradle.plugin.javafx.fxml;
 
 import com.nesp.gradle.plugin.javafx.BaseTask;
 import com.nesp.gradle.plugin.javafx.JavaFxPlugin;
+import com.nesp.gradle.plugin.javafx.reflect.MethodExecutableElement;
 import com.squareup.javapoet.*;
 import javafx.fxml.FXML;
 import org.gradle.api.Project;
@@ -27,10 +28,12 @@ import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
 
 public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
     private static final String TAG = "GenerateBaseControllerClassFileTask";
@@ -131,14 +134,35 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
                 }
 
                 List<ClassMethod.Param> params = classMethod.getParams();
+                Class<?>[] paramClasses = null;
                 if (params != null) {
-                    for (ClassMethod.Param param : params) {
+                    paramClasses = new Class[params.size()];
+                    for (int i = 0, paramsSize = params.size(); i < paramsSize; i++) {
+                        final ClassMethod.Param param = params.get(i);
+                        try {
+                            paramClasses[i] = Class.forName(param.getTypeName());
+                        } catch (ClassNotFoundException e) {
+                            e.printStackTrace();
+                        }
                         ParameterSpec parameterSpec =
                                 ParameterSpec.builder(param.getType(), param.getName(), Modifier.FINAL).build();
                         methodBuilder.addParameter(parameterSpec);
                     }
                 }
                 methodBuilder.returns(classMethod.getReturnType());
+
+                if (classMethod.isOverride() && baseControllerSuperClass != null) {
+                    try {
+                        final Class<?> baseControllerSuperClass1 = (Class<?>) baseControllerSuperClass;
+                        final Method method = baseControllerSuperClass1
+                                .getDeclaredMethod(classMethod.getName(), paramClasses);
+
+                        MethodSpec.overriding(new MethodExecutableElement(method));
+                    } catch (NoSuchMethodException e) {
+                        e.printStackTrace();
+                    }
+
+                }
                 classBuilder.addMethod(methodBuilder.build());
             }
 
