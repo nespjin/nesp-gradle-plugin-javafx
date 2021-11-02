@@ -73,8 +73,13 @@ public final class BaseControllerFXMLParser extends FXMLParser {
         params.add(new ClassMethod.Param(URL.class, "location"));
         params.add(new ClassMethod.Param(ResourceBundle.class, "resources"));
         classMethod2.setParams(params);
-
         mBaseControllerClass.getClassMethods().add(classMethod2);
+
+        final ClassMethod classMethod3 = new ClassMethod();
+        classMethod3.setName("deinitialize");
+        classMethod3.setModifier(Modifier.PUBLIC);
+        classMethod3.setReturnType(void.class);
+        mBaseControllerClass.getClassMethods().add(classMethod3);
 
         List<ClassField> fieldsNeedRemoved = new LinkedList<>();
         for (ClassField field : mBaseControllerClass.getFields()) {
