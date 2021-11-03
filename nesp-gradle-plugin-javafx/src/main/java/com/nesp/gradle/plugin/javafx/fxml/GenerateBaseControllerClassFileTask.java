@@ -19,13 +19,11 @@ package com.nesp.gradle.plugin.javafx.fxml;
 import com.nesp.gradle.plugin.javafx.BaseTask;
 import com.nesp.gradle.plugin.javafx.Config;
 import com.nesp.gradle.plugin.javafx.JavaFxPlugin;
-import com.nesp.gradle.plugin.javafx.reflect.MethodExecutableElement;
+import com.nesp.gradle.plugin.javafx.reflect.MethodUtil;
 import com.squareup.javapoet.*;
-import groovyjarjarantlr4.v4.codegen.model.decl.CodeBlock;
 import javafx.fxml.FXML;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
-import org.gradle.internal.impldep.org.apache.http.util.TextUtils;
 
 import javax.inject.Inject;
 import javax.lang.model.element.Modifier;
@@ -37,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.function.Predicate;
 
 
 public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
@@ -77,22 +74,34 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
         }
 
         final List<Type> superInterfaces = new ArrayList<>();
+        final List<Method> superInterfaceMethods = new ArrayList<>();
 
         if (!baseControllerSuperInterfaces.isEmpty()) {
             for (String baseControllerSuperInterfaceName : baseControllerSuperInterfaces) {
                 try {
                     final Class<?> baseControllerSuperInterfaceClass =
                             classLoader.loadClass(baseControllerSuperInterfaceName);
-                    if (baseControllerSuperClass != null
-                            && baseControllerSuperInterfaceClass != null) {
-                        if (!Arrays.stream(baseControllerClassInterfaces)
-                                .filter(aClass -> aClass == baseControllerSuperInterfaceClass)
-                                .toList().isEmpty()) {
-                            // The base controller class is child of interface, skip it.
-                            continue;
+                    if (baseControllerSuperInterfaceClass != null) {
+                        final Method[] methods = baseControllerSuperInterfaceClass.getMethods();
+                        if (methods.length > 0) {
+                            if (!superInterfaceMethods.isEmpty()) {
+                                for (int i = 0, length = methods.length; i < length; i++) {
+                                    final Method method = methods[i];
+                                    if (!MethodUtil.exits(superInterfaceMethods, method)) {
+                                        superInterfaceMethods.add(method);
+                                    }
+                                }
+                            } else superInterfaceMethods.addAll(List.of(methods));
+                        }
+                        if (baseControllerSuperClass != null) {
+                            if (!Arrays.stream(baseControllerClassInterfaces)
+                                    .filter(aClass -> aClass == baseControllerSuperInterfaceClass)
+                                    .toList().isEmpty()) {
+                                // The base controller class is child of interface, skip it.
+                                continue;
+                            }
                         }
                     }
-
                     superInterfaces.add(baseControllerSuperInterfaceClass);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -138,20 +147,20 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
             }
 
             List<ClassMethod> classMethods = baseControllerClass.getClassMethods();
+
+            if (!superInterfaceMethods.isEmpty()) {
+                // Implements interface methods
+                for (final Method superInterfaceMethod : superInterfaceMethods) {
+                    final ClassMethod classMethod = ClassMethod.of(superInterfaceMethod);
+                    if (!ClassMethod.exits(classMethods, classMethod)) {
+                        classMethods.add(classMethod);
+                    }
+                }
+            }
+
             for (ClassMethod classMethod : classMethods) {
                 MethodSpec.Builder methodBuilder = MethodSpec.methodBuilder(classMethod.getName());
-                if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.fxml.Modifier.ABSTRACT) {
-                    methodBuilder.addModifiers(Modifier.ABSTRACT);
-                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.fxml.Modifier.PUBLIC) {
-                    methodBuilder.addModifiers(Modifier.PUBLIC);
-                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.fxml.Modifier.PROTECTED) {
-                    methodBuilder.addModifiers(Modifier.PROTECTED);
-                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.fxml.Modifier.PRIVATE) {
-                    methodBuilder.addModifiers(Modifier.PRIVATE);
-                } else if (classMethod.getModifier() == com.nesp.gradle.plugin.javafx.fxml.Modifier.FINAL) {
-                    methodBuilder.addModifiers(Modifier.FINAL);
-                }
-
+                methodBuilder.addModifiers(com.nesp.gradle.plugin.javafx.fxml.Modifier.toVmModifiers(classMethod.getModifiers()));
                 List<ClassMethod.Param> params = classMethod.getParams();
                 Class<?>[] paramClasses = null;
                 if (params != null) {
@@ -184,10 +193,13 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
                 }
                 methodString.append(")");
 
+                boolean foundOnSuper = false;
                 if (baseControllerSuperClass != null) {
                     final Class<?> baseControllerSuperClass1 = (Class<?>) baseControllerSuperClass;
                     Method method = null;
                     try {
+                       /* JavaFxPlugin.printLog(TAG, "classMethod.getName()" + classMethod.getName()
+                                + " paramClasses = " + Arrays.toString(paramClasses));*/
                         method = baseControllerSuperClass1
                                 .getDeclaredMethod(classMethod.getName(), paramClasses);
                     } catch (NoSuchMethodException | SecurityException e) {
@@ -199,12 +211,38 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
                         // Found super method, add override code
                         // TODO: Replace with MethodSpec.override(method)
                         methodBuilder.addAnnotation(Override.class);
-                        methodBuilder.addCode("super." + methodString + ";");
+                        methodBuilder.addCode(classMethod.getReturnType().equals(void.class) ?
+                                "super." + methodString + ";" :
+                                "return super." + methodString + ";"
+                        );
+                        foundOnSuper = true;
                     }
 
                 }
 
                 methodBuilder.returns(classMethod.getReturnType());
+                if (!foundOnSuper && !classMethod.getReturnType().equals(void.class)) {
+                    if (classMethod.getReturnType().equals(boolean.class)) {
+                        methodBuilder.addCode("return false;");
+                    } else if (classMethod.getReturnType().equals(char.class)) {
+                        methodBuilder.addCode("return '';");
+                    } else if (classMethod.getReturnType().equals(byte.class)) {
+                        methodBuilder.addCode("return (byte)0;");
+                    } else if (classMethod.getReturnType().equals(short.class)) {
+                        methodBuilder.addCode("return (short)-1;");
+                    } else if (classMethod.getReturnType().equals(int.class)) {
+                        methodBuilder.addCode("return -1;");
+                    } else if (classMethod.getReturnType().equals(long.class)) {
+                        methodBuilder.addCode("return -1L;");
+                    } else if (classMethod.getReturnType().equals(float.class)) {
+                        methodBuilder.addCode("return -1F;");
+                    } else if (classMethod.getReturnType().equals(double.class)) {
+                        methodBuilder.addCode("return -1D;");
+                    } else {
+                        methodBuilder.addCode("return null;");
+                    }
+
+                }
                 classBuilder.addMethod(methodBuilder.build());
             }
 

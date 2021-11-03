@@ -13,7 +13,7 @@ nespJfx {
     baseControllerOptions {
         enable = true
         superClass = "com.nesp.plugin.app.BaseController"
-        interfaces = ["javafx.fxml.Initializable"]
+        interfaces = ["javafx.fxml.Initializable", "com.nesp.plugin.app.IController"]
     }
 }
 

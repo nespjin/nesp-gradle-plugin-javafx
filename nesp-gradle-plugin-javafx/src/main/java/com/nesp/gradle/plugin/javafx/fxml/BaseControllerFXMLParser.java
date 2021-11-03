@@ -66,7 +66,7 @@ public final class BaseControllerFXMLParser extends FXMLParser {
 
         final ClassMethod classMethod2 = new ClassMethod();
         classMethod2.setName("initialize");
-        classMethod2.setModifier(Modifier.PUBLIC);
+        classMethod2.setModifiers(List.of(new Modifier[]{Modifier.PUBLIC}));
         classMethod2.setReturnType(void.class);
 
         List<ClassMethod.Param> params = new ArrayList<>();
@@ -77,7 +77,7 @@ public final class BaseControllerFXMLParser extends FXMLParser {
 
         final ClassMethod classMethod3 = new ClassMethod();
         classMethod3.setName("onDestroy");
-        classMethod3.setModifier(Modifier.PUBLIC);
+        classMethod3.setModifiers(List.of(new Modifier[]{Modifier.PUBLIC}));
         classMethod3.setReturnType(void.class);
         mBaseControllerClass.getClassMethods().add(classMethod3);
 
