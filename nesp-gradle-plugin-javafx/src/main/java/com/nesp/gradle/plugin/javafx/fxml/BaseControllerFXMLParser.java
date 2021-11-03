@@ -76,7 +76,7 @@ public final class BaseControllerFXMLParser extends FXMLParser {
         mBaseControllerClass.getClassMethods().add(classMethod2);
 
         final ClassMethod classMethod3 = new ClassMethod();
-        classMethod3.setName("deinitialize");
+        classMethod3.setName("onDestroy");
         classMethod3.setModifier(Modifier.PUBLIC);
         classMethod3.setReturnType(void.class);
         mBaseControllerClass.getClassMethods().add(classMethod3);
