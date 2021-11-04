@@ -198,11 +198,15 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
                     final Class<?> baseControllerSuperClass1 = (Class<?>) baseControllerSuperClass;
                     Method method = null;
                     try {
-                       /* JavaFxPlugin.printLog(TAG, "classMethod.getName()" + classMethod.getName()
-                                + " paramClasses = " + Arrays.toString(paramClasses));*/
-                        method = baseControllerSuperClass1
-                                .getDeclaredMethod(classMethod.getName(), paramClasses);
-                    } catch (NoSuchMethodException | SecurityException e) {
+                        final Method[] declaredMethods = baseControllerSuperClass1.getDeclaredMethods();
+                        for (final Method declaredMethod : declaredMethods) {
+                            if (ClassMethod.of(declaredMethod).equals(classMethod)) {
+                                method = declaredMethod;
+                                break;
+                            }
+                        }
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
                         JavaFxPlugin.printLog(TAG, "method " + methodString
                                 + " not found in " + baseControllerSuperClass);
                     }
