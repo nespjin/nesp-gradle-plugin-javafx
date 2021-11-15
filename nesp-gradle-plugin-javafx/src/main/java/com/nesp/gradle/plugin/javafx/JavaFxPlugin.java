@@ -171,22 +171,27 @@ public class JavaFxPlugin implements Plugin<Project> {
                         baseControllerSuperClass,
                         baseControllerSuperInterfaces
                 );
+                if (baseControllerEnable) {
+                    try {
+                        generateBaseControllerClassFileTask.run();
+                    } catch (Exception e) {
+                        Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
+                        if (!compileJavaTasks.isEmpty()) {
+                            JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
+                            final Action<Task> taskAction = new Action<>() {
+                                @Override
+                                public void execute(@Nonnull final Task task1) {
+                                    if (baseControllerEnable) {
+                                        generateBaseControllerClassFileTask.run();
+                                    }
+                                }
+                            };
 
-                Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
-                if (!compileJavaTasks.isEmpty()) {
-                    JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
-                    final Action<Task> taskAction = new Action<>() {
-                        @Override
-                        public void execute(@Nonnull final Task task1) {
-                            if (baseControllerEnable) {
-                                generateBaseControllerClassFileTask.run();
-                            }
+                            // exec twice.
+                            compileJavaTask.doFirst(taskAction);
+                            compileJavaTask.doLast(taskAction);
                         }
-                    };
-
-                    // exec twice.
-                    compileJavaTask.doFirst(taskAction);
-                    compileJavaTask.doLast(taskAction);
+                    }
                 }
             }
         });
@@ -209,8 +214,8 @@ public class JavaFxPlugin implements Plugin<Project> {
                         GENERATE_R_FILE_TASK_NAME,
                         GenerateRClassFileTask.class,
                         Optional.ofNullable(nespJfx.resourceConfig()).orElse(ResourceConfig.getDefault()));
-
-                Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
+                generateRClassFileTask.run();
+                /*Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
                 if (!compileJavaTasks.isEmpty()) {
                     JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
                     compileJavaTask.doFirst(new Action<Task>() {
@@ -219,7 +224,7 @@ public class JavaFxPlugin implements Plugin<Project> {
                             generateRClassFileTask.run();
                         }
                     });
-                }
+                }*/
             }
         });
     }
