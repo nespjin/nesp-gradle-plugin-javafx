@@ -77,14 +77,14 @@ public class JavaFxPlugin implements Plugin<Project> {
 
 
     private void preClear(final Project project) {
-//        final File desFile = new File(ProjectUtils.getGenerateSourcePath(project));
-//
-//        // Clear all pre generated
-//        if (desFile.isFile()) {
-//            FileUtils.delete(desFile);
-//        } else {
-//            deleteDirectory(desFile);
-//        }
+        final File desFile = new File(ProjectUtils.getGenerateSourcePath(project));
+
+        // Clear all pre generated
+        if (desFile.isFile()) {
+            FileUtils.delete(desFile);
+        } else {
+            deleteDirectory(desFile);
+        }
     }
 
     /**
