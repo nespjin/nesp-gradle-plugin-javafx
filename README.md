@@ -24,6 +24,8 @@ JavaFx Gradle Plugin
 > - R.string
 > - R.layout
 
+3. 自动生成Build类， 包含一些构建信息， 如 versionCode、 versionName
+
 配合[nesp-sdk-javafx](https://github.com/nespjin/nesp-sdk-javafx)的```Context.getRespource()``` 可以更方便引用资源。例如： ```
 Context.getResource().getString(R.string.name)```
 
@@ -41,6 +43,11 @@ plugins {
 }
 
 nespJfx {
+    defaultConfig {
+        versionCode = 1
+        versionName = "1.0.0"
+    }
+
     baseControllerOptions {
         // 是否生成 BaseController
         enable = true
