@@ -14,7 +14,7 @@ JavaFx Gradle Plugin
 
 ## 开发环境
 
-- Gradle: Gradle-7.2
+- Gradle: Gradle-7.3
 - Java: OpenJdk-17
 
 ## 功能特性

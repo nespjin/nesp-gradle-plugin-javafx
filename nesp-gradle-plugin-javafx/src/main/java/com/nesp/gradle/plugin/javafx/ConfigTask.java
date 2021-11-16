@@ -51,7 +51,7 @@ public class ConfigTask extends BaseTask {
 
                 mainSrcDirs.add(desFile);
 
-//                        printDebugLog("Add src dir", desFile.getAbsolutePath());
+//                printDebugLog("mainSrcDirs", String.valueOf(mainSrcDirs));
 
                 javaPluginExtension
                         .getSourceSets()

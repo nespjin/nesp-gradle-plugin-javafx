@@ -234,7 +234,7 @@ public class JavaFxPlugin implements Plugin<Project> {
                     if (!tasks.isEmpty()) {
                         final GenerateRClassFileTask generateRClassFileTask = (GenerateRClassFileTask) tasks.toArray(new Object[0])[0];
                         generateBaseControllerClassFileTask.dependsOn(generateRClassFileTask);
-//                        generateBaseControllerClassFileTask.run();
+                        generateBaseControllerClassFileTask.run();
                     }
 
                     Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);

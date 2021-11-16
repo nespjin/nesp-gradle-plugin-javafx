@@ -1,5 +1,6 @@
 package com.nesp.gradle.plugin.javafx.utils;
 
+import com.nesp.gradle.plugin.javafx.JavaFxPlugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
 import org.gradle.api.file.FileCollection;
@@ -102,14 +103,14 @@ public class ProjectUtils {
             }
         }
 
-//        Arrays.stream(urls).forEach(url -> JavaFxPlugin.printDebugLog("ClassPath", String.valueOf(url)));
+        urls.forEach(url -> JavaFxPlugin.printDebugLog("ClassPath", String.valueOf(url)));
 
         URL[] urlArray = new URL[urls.size()];
         final List<URL> urlList = urls.stream().toList();
         for (int i = 0; i < urlList.size(); i++) {
             urlArray[i] = urlList.get(i);
         }
-        return new URLClassLoader(urlArray, Thread.currentThread().getContextClassLoader());
+        return new URLClassLoader(urlArray, ClassLoader.getSystemClassLoader());
     }
 
     public static String getGenerateSourcePath(Project project) {

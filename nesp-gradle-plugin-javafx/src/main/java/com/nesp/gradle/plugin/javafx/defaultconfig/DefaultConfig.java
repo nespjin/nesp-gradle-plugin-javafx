@@ -16,6 +16,8 @@
 
 package com.nesp.gradle.plugin.javafx.defaultconfig;
 
+import org.gradle.api.tasks.Input;
+
 /**
  * Team: NESP Technology
  * Author: <a href="mailto:1756404649@qq.com">JinZhaolu Email:1756404649@qq.com</a>
@@ -34,20 +36,24 @@ public class DefaultConfig {
         return defaultConfig;
     }
 
+    @Input
     public Integer getVersionCode() {
         return versionCode;
     }
 
-    public void setVersionCode(final Integer versionCode) {
+    public DefaultConfig setVersionCode(final Integer versionCode) {
         this.versionCode = versionCode;
+        return this;
     }
 
+    @Input
     public String getVersionName() {
         return versionName;
     }
 
-    public void setVersionName(final String versionName) {
+    public DefaultConfig setVersionName(final String versionName) {
         this.versionName = versionName;
+        return this;
     }
 
 }

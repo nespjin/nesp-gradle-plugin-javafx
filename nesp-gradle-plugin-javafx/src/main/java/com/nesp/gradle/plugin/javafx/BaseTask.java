@@ -30,8 +30,25 @@ public abstract class BaseTask extends DefaultTask {
     public BaseTask() {
         Project project = getProject();
         sourcePathGenerate = new File(ProjectUtils.getGenerateSourcePath(project));
-        packageName = ProjectUtils.findPackageName(project);
-        classLoader = ProjectUtils.createClassLoader(project);
+        final String classLoaderPropertyName = "classLoader";
+
+        if (project.getExtensions().getExtraProperties().has(classLoaderPropertyName)
+                && project.getExtensions().getExtraProperties().get(classLoaderPropertyName) != null) {
+            this.classLoader = (ClassLoader) project.getExtensions().getExtraProperties().get(classLoaderPropertyName);
+        } else {
+            this.classLoader = ProjectUtils.createClassLoader(project);
+            project.getExtensions().getExtraProperties().set(classLoaderPropertyName, this.classLoader);
+        }
+
+        final String packageNamePropertyName = "packageName";
+        if (project.getExtensions().getExtraProperties().has(packageNamePropertyName)
+                && project.getExtensions().getExtraProperties().get(packageNamePropertyName) != null) {
+            this.packageName =
+                    (String) project.getExtensions().getExtraProperties().get(packageNamePropertyName);
+        } else {
+            this.packageName = ProjectUtils.findPackageName(project);
+            project.getExtensions().getExtraProperties().set(packageNamePropertyName, this.packageName);
+        }
     }
 
     public File getSourcePathGenerate() {
