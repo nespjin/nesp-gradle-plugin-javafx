@@ -16,6 +16,7 @@
 
 package com.nesp.gradle.plugin.javafx;
 
+import com.nesp.gradle.plugin.javafx.defaultconfig.DefaultConfig;
 import com.nesp.gradle.plugin.javafx.fxml.BaseControllerOptions;
 import com.nesp.gradle.plugin.javafx.resource.ResourceConfig;
 import groovy.lang.Closure;
@@ -25,6 +26,7 @@ import org.gradle.util.internal.ConfigureUtil;
 public class NespJavaFxPluginExtension {
     BaseControllerOptions mBaseControllerOptions;
     ResourceConfig mResourceConfig;
+    DefaultConfig mDefaultConfig;
 
     public BaseControllerOptions baseControllerOptions(Closure<? super BaseControllerOptions> closure) {
         return baseControllerOptions(ConfigureUtil.configureUsing(closure));
@@ -42,6 +44,9 @@ public class NespJavaFxPluginExtension {
         return mBaseControllerOptions;
     }
 
+    public ResourceConfig resourceConfig(Closure<? super ResourceConfig> closure) {
+        return resourceConfig(ConfigureUtil.configureUsing(closure));
+    }
 
     public ResourceConfig resourceConfig(Action<? super ResourceConfig> action) {
         if (mResourceConfig == null) {
@@ -54,4 +59,22 @@ public class NespJavaFxPluginExtension {
     public ResourceConfig resourceConfig() {
         return mResourceConfig;
     }
+
+    public DefaultConfig defaultConfig(Closure<? super DefaultConfig> closure) {
+        return defaultConfig(ConfigureUtil.configureUsing(closure));
+    }
+
+    public DefaultConfig defaultConfig(Action<? super DefaultConfig> action) {
+        if (mDefaultConfig == null) {
+            mDefaultConfig = new DefaultConfig();
+        }
+        action.execute(mDefaultConfig);
+        return mDefaultConfig;
+    }
+
+    public DefaultConfig defaultConfig() {
+        return mDefaultConfig;
+    }
+
+
 }

@@ -17,6 +17,7 @@
 package com.nesp.gradle.plugin.javafx.resource;
 
 import com.nesp.gradle.plugin.javafx.BaseTask;
+import com.nesp.gradle.plugin.javafx.JavaFxPlugin;
 import org.gradle.api.Project;
 import org.gradle.api.tasks.TaskAction;
 import org.gradle.internal.impldep.org.eclipse.jgit.annotations.NonNull;
@@ -39,6 +40,7 @@ public abstract class GenerateRClassFileTask extends BaseTask {
 
     @TaskAction
     public void run() {
+        JavaFxPlugin.printLog("GenerateRClassFileTask", "run");
         final Project project = getProject();
         final File desFile = getSourcePathGenerate();
         final String packageName = getPackageName();

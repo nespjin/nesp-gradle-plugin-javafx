@@ -55,6 +55,7 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
 
     @TaskAction
     public void run() {
+        JavaFxPlugin.printLog("GenerateBaseControllerClassFileTask", "run");
         final Project project = getProject();
         final File desFile = getSourcePathGenerate();
         final String packageName = getPackageName();

@@ -16,6 +16,8 @@
 
 package com.nesp.gradle.plugin.javafx;
 
+import com.nesp.gradle.plugin.javafx.defaultconfig.DefaultConfig;
+import com.nesp.gradle.plugin.javafx.defaultconfig.GenerateBuildClassFileTask;
 import com.nesp.gradle.plugin.javafx.fxml.BaseControllerOptions;
 import com.nesp.gradle.plugin.javafx.fxml.GenerateBaseControllerClassFileTask;
 import com.nesp.gradle.plugin.javafx.resource.GenerateRClassFileTask;
@@ -26,8 +28,6 @@ import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 import org.gradle.api.Task;
-import org.gradle.api.plugins.JavaPlugin;
-import org.gradle.api.plugins.JavaPluginExtension;
 import org.gradle.api.tasks.compile.JavaCompile;
 
 import javax.annotation.Nonnull;
@@ -44,8 +44,10 @@ public class JavaFxPlugin implements Plugin<Project> {
     public static final boolean DEBUG = false;
 
     public static final String NESP_JAVA_FX_PLUGIN_EXTENSION_NAME = "nespJfx";
+    public static final String CONFIG_JAVAFX_TASK_NAME = "configJavaFx";
     public static final String GENERATE_BASE_CONTROLLER_FILE_TASK_NAME = "generateJavaFxBaseControllerFile";
     public static final String GENERATE_R_FILE_TASK_NAME = "generateJavaFxRFile";
+    public static final String GENERATE_BUILD_FILE_TASK_NAME = "generateJavaFxBuildFile";
 
     public static void printDebugLog(final String tag, final String msg) {
         printLog(true, tag, msg);
@@ -71,8 +73,9 @@ public class JavaFxPlugin implements Plugin<Project> {
         preClear(project);
         configureSourceSetGenerateFileOutputs(project);
         configureNespJavaFxPluginExtension(project);
-        configureGenerateBaseControllerFileTask(project);
+        configureGenerateBuildFileTask(project);
         configureGenerateRFileTask(project);
+        configureGenerateBaseControllerFileTask(project);
     }
 
 
@@ -100,29 +103,9 @@ public class JavaFxPlugin implements Plugin<Project> {
         project.afterEvaluate(new Action<Project>() {
             @Override
             public void execute(@Nonnull final Project project1) {
-                if (project1.getPlugins().hasPlugin(JavaPlugin.class)) {
-                    final File desFile = new File(ProjectUtils.getGenerateSourcePath(project));
-
-                    JavaPluginExtension javaPluginExtension =
-                            project1.getExtensions().findByType(JavaPluginExtension.class);
-                    if (javaPluginExtension != null) {
-                        Set<File> mainSrcDirs = javaPluginExtension
-                                .getSourceSets()
-                                .getByName("main")
-                                .getJava()
-                                .getSrcDirs();
-
-                        mainSrcDirs.add(desFile);
-
-//                        printDebugLog("Add src dir", desFile.getAbsolutePath());
-
-                        javaPluginExtension
-                                .getSourceSets()
-                                .getByName("main")
-                                .getJava()
-                                .setSrcDirs(mainSrcDirs);
-                    }
-                }
+                final ConfigTask configTask =
+                        project.getTasks().create(CONFIG_JAVAFX_TASK_NAME, ConfigTask.class);
+                configTask.run();
             }
         });
     }
@@ -145,6 +128,80 @@ public class JavaFxPlugin implements Plugin<Project> {
 
     private void configureNespJavaFxPluginExtension(Project project) {
         project.getExtensions().add(NESP_JAVA_FX_PLUGIN_EXTENSION_NAME, NespJavaFxPluginExtension.class);
+    }
+
+    @SuppressWarnings("all")
+    private void configureGenerateBuildFileTask(Project project) {
+        // Do not use lambdas.
+        // Using Java lambdas is not supported as task inputs.
+        // Please refer to https://docs.gradle.org/7.2/userguide/validation_problems.html#implementation_unknown
+        project.afterEvaluate(new Action<Project>() {
+            @Override
+            public void execute(@Nonnull final Project project1) {
+                NespJavaFxPluginExtension nespJfx =
+                        (NespJavaFxPluginExtension) project1.getExtensions()
+                                .findByName(NESP_JAVA_FX_PLUGIN_EXTENSION_NAME);
+                if (nespJfx == null) return;
+
+                GenerateBuildClassFileTask generateBuildClassFileTask = project1.getTasks().create(
+                        GENERATE_BUILD_FILE_TASK_NAME,
+                        GenerateBuildClassFileTask.class,
+                        Optional.ofNullable(nespJfx.defaultConfig()).orElse(DefaultConfig.getDefault()));
+                generateBuildClassFileTask.doFirst(new Action<Task>() {
+                    @Override
+                    public void execute(final Task task) {
+                        final Set<Task> tasks =
+                                project1.getTasksByName(CONFIG_JAVAFX_TASK_NAME, true);
+                        if (!tasks.isEmpty()) {
+                            ((ConfigTask) tasks.toArray(new Object[0])[0]).run();
+                        }
+                    }
+                });
+                generateBuildClassFileTask.run();
+            }
+        });
+    }
+
+    @SuppressWarnings("all")
+    private void configureGenerateRFileTask(Project project) {
+        // Do not use lambdas.
+        // Using Java lambdas is not supported as task inputs.
+        // Please refer to https://docs.gradle.org/7.2/userguide/validation_problems.html#implementation_unknown
+        project.afterEvaluate(new Action<Project>() {
+            @Override
+            public void execute(@Nonnull final Project project1) {
+                NespJavaFxPluginExtension nespJfx =
+                        (NespJavaFxPluginExtension) project1.getExtensions()
+                                .findByName(NESP_JAVA_FX_PLUGIN_EXTENSION_NAME);
+                if (nespJfx == null) return;
+
+                GenerateRClassFileTask generateRClassFileTask = project1.getTasks().create(
+                        GENERATE_R_FILE_TASK_NAME,
+                        GenerateRClassFileTask.class,
+                        Optional.ofNullable(nespJfx.resourceConfig()).orElse(ResourceConfig.getDefault()));
+                generateRClassFileTask.doFirst(new Action<Task>() {
+                    @Override
+                    public void execute(final Task task) {
+                        final Set<Task> tasks =
+                                project1.getTasksByName(GENERATE_BUILD_FILE_TASK_NAME, true);
+                        if (!tasks.isEmpty()) {
+                            ((GenerateBuildClassFileTask) tasks.toArray(new Object[0])[0]).run();
+                        }
+                    }
+                });
+                generateRClassFileTask.run();
+                /*Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
+                if (!compileJavaTasks.isEmpty()) {
+                    JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
+                    compileJavaTask.doFirst(new Action<Task>() {
+                        @Override
+                        public void execute(@Nonnull final Task task1) {
+                            generateRClassFileTask.run();
+                        }
+                    });
+                }*/
+            }
+        });
     }
 
     @SuppressWarnings("all")
@@ -172,59 +229,36 @@ public class JavaFxPlugin implements Plugin<Project> {
                         baseControllerSuperInterfaces
                 );
                 if (baseControllerEnable) {
-                    try {
-                        generateBaseControllerClassFileTask.run();
-                    } catch (Exception e) {
-                        Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
-                        if (!compileJavaTasks.isEmpty()) {
-                            JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
-                            final Action<Task> taskAction = new Action<>() {
-                                @Override
-                                public void execute(@Nonnull final Task task1) {
-                                    if (baseControllerEnable) {
-                                        generateBaseControllerClassFileTask.run();
-                                    }
-                                }
-                            };
+                    final Set<Task> tasks =
+                            project1.getTasksByName(GENERATE_R_FILE_TASK_NAME, true);
+                    if (!tasks.isEmpty()) {
+                        final GenerateRClassFileTask generateRClassFileTask = (GenerateRClassFileTask) tasks.toArray(new Object[0])[0];
+                        generateBaseControllerClassFileTask.doFirst(new Action<Task>() {
+                            @Override
+                            public void execute(final Task task) {
+                                generateRClassFileTask.run();
+                            }
+                        });
+//                        generateBaseControllerClassFileTask.run();
+                    }
 
-                            // exec twice.
-                            compileJavaTask.doFirst(taskAction);
-                            compileJavaTask.doLast(taskAction);
-                        }
+                    Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
+                    if (!compileJavaTasks.isEmpty()) {
+                        JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
+                        final Action<Task> taskAction = new Action<>() {
+                            @Override
+                            public void execute(@Nonnull final Task task1) {
+                                if (baseControllerEnable) {
+                                    generateBaseControllerClassFileTask.run();
+                                }
+                            }
+                        };
+
+                        // exec twice.
+                        compileJavaTask.doFirst(taskAction);
+                        compileJavaTask.doLast(taskAction);
                     }
                 }
-            }
-        });
-    }
-
-    @SuppressWarnings("all")
-    private void configureGenerateRFileTask(Project project) {
-        // Do not use lambdas.
-        // Using Java lambdas is not supported as task inputs.
-        // Please refer to https://docs.gradle.org/7.2/userguide/validation_problems.html#implementation_unknown
-        project.afterEvaluate(new Action<Project>() {
-            @Override
-            public void execute(@Nonnull final Project project1) {
-                NespJavaFxPluginExtension nespJfx =
-                        (NespJavaFxPluginExtension) project1.getExtensions()
-                                .findByName(NESP_JAVA_FX_PLUGIN_EXTENSION_NAME);
-                if (nespJfx == null) return;
-
-                GenerateRClassFileTask generateRClassFileTask = project1.getTasks().create(
-                        GENERATE_R_FILE_TASK_NAME,
-                        GenerateRClassFileTask.class,
-                        Optional.ofNullable(nespJfx.resourceConfig()).orElse(ResourceConfig.getDefault()));
-                generateRClassFileTask.run();
-                /*Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
-                if (!compileJavaTasks.isEmpty()) {
-                    JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
-                    compileJavaTask.doFirst(new Action<Task>() {
-                        @Override
-                        public void execute(@Nonnull final Task task1) {
-                            generateRClassFileTask.run();
-                        }
-                    });
-                }*/
             }
         });
     }
