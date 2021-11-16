@@ -233,12 +233,7 @@ public class JavaFxPlugin implements Plugin<Project> {
                             project1.getTasksByName(GENERATE_R_FILE_TASK_NAME, true);
                     if (!tasks.isEmpty()) {
                         final GenerateRClassFileTask generateRClassFileTask = (GenerateRClassFileTask) tasks.toArray(new Object[0])[0];
-                        generateBaseControllerClassFileTask.doFirst(new Action<Task>() {
-                            @Override
-                            public void execute(final Task task) {
-                                generateRClassFileTask.run();
-                            }
-                        });
+                        generateBaseControllerClassFileTask.dependsOn(generateRClassFileTask);
 //                        generateBaseControllerClassFileTask.run();
                     }
 
@@ -257,6 +252,7 @@ public class JavaFxPlugin implements Plugin<Project> {
                         // exec twice.
                         compileJavaTask.doFirst(taskAction);
                         compileJavaTask.doLast(taskAction);
+
                     }
                 }
             }
