@@ -16,6 +16,7 @@ JavaFx Gradle Plugin
 
 - Gradle: Gradle-7.3
 - Java: OpenJdk-17
+- JavaFx: 17.0.1
 
 ## 功能特性
 
