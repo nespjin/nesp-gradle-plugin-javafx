@@ -10,6 +10,11 @@ group 'com.nesp.plugin'
 version '1.0-SNAPSHOT'
 
 nespJfx {
+    defaultConfig {
+        versionCode=1
+        versionName="1.0.0"
+    }
+
     baseControllerOptions {
         enable = true
         superClass = "com.nesp.plugin.app.BaseController"
