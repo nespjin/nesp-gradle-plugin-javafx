@@ -28,12 +28,23 @@ public class DefaultConfig {
 
     private String versionName;
     private Integer versionCode;
+    private Boolean debug = false;
 
     public static DefaultConfig getDefault() {
-        final DefaultConfig defaultConfig = new DefaultConfig();
-        defaultConfig.setVersionCode(1);
-        defaultConfig.setVersionName("1.0");
-        return defaultConfig;
+        return new DefaultConfig()
+                .setVersionCode(1)
+                .setVersionName("1.0")
+                .setDebug(false);
+    }
+
+    @Input
+    public Boolean getDebug() {
+        return debug;
+    }
+
+    public DefaultConfig setDebug(final Boolean debug) {
+        this.debug = debug;
+        return this;
     }
 
     @Input

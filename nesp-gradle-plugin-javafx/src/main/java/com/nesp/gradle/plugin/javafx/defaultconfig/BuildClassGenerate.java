@@ -68,6 +68,16 @@ public final class BuildClassGenerate {
         versionNameFieldSpecBuilder.initializer("\"" + mDefaultConfig.getVersionName() + "\"", "");
         buildClassBuilder.addField(versionNameFieldSpecBuilder.build());
 
+        final FieldSpec.Builder debugFieldSpecBuilder = FieldSpec.builder(
+                Boolean.class,
+                "debug",
+                Modifier.PUBLIC,
+                Modifier.STATIC,
+                Modifier.FINAL
+        );
+        debugFieldSpecBuilder.initializer(mDefaultConfig.getDebug().toString(), "");
+        buildClassBuilder.addField(debugFieldSpecBuilder.build());
+
         final JavaFile.Builder javaFileBuilder = JavaFile.builder(mPackageName, buildClassBuilder.build());
         javaFileBuilder.addFileComment(Config.CLASS_LICENSE_COMMENT);
         File file = new File(mSourceDir.getAbsolutePath());
