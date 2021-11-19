@@ -17,7 +17,7 @@
 package com.nesp.gradle.plugin.javafx;
 
 import com.nesp.gradle.plugin.javafx.defaultconfig.DefaultConfig;
-import com.nesp.gradle.plugin.javafx.defaultconfig.GenerateBuildClassFileTask;
+import com.nesp.gradle.plugin.javafx.defaultconfig.GenerateBuildConfigClassFileTask;
 import com.nesp.gradle.plugin.javafx.fxml.BaseControllerOptions;
 import com.nesp.gradle.plugin.javafx.fxml.GenerateBaseControllerClassFileTask;
 import com.nesp.gradle.plugin.javafx.resource.GenerateRClassFileTask;
@@ -143,9 +143,9 @@ public class JavaFxPlugin implements Plugin<Project> {
                                 .findByName(NESP_JAVA_FX_PLUGIN_EXTENSION_NAME);
                 if (nespJfx == null) return;
 
-                GenerateBuildClassFileTask generateBuildClassFileTask = project1.getTasks().create(
+                GenerateBuildConfigClassFileTask generateBuildClassFileTask = project1.getTasks().create(
                         GENERATE_BUILD_FILE_TASK_NAME,
-                        GenerateBuildClassFileTask.class,
+                        GenerateBuildConfigClassFileTask.class,
                         Optional.ofNullable(nespJfx.defaultConfig()).orElse(DefaultConfig.getDefault()));
                 generateBuildClassFileTask.doFirst(new Action<Task>() {
                     @Override
@@ -185,7 +185,7 @@ public class JavaFxPlugin implements Plugin<Project> {
                         final Set<Task> tasks =
                                 project1.getTasksByName(GENERATE_BUILD_FILE_TASK_NAME, true);
                         if (!tasks.isEmpty()) {
-                            ((GenerateBuildClassFileTask) tasks.toArray(new Object[0])[0]).run();
+                            ((GenerateBuildConfigClassFileTask) tasks.toArray(new Object[0])[0]).run();
                         }
                     }
                 });

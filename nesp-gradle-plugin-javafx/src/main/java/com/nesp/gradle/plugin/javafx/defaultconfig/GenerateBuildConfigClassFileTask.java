@@ -25,22 +25,22 @@ import javax.inject.Inject;
 import java.io.File;
 import java.util.Optional;
 
-public abstract class GenerateBuildClassFileTask extends BaseTask {
+public abstract class GenerateBuildConfigClassFileTask extends BaseTask {
 
     @NonNull
     private final DefaultConfig mDefaultConfig;
 
     @Inject
-    public GenerateBuildClassFileTask(DefaultConfig defaultConfig) {
+    public GenerateBuildConfigClassFileTask(DefaultConfig defaultConfig) {
         mDefaultConfig = Optional.ofNullable(defaultConfig).orElse(DefaultConfig.getDefault());
     }
 
     @TaskAction
     public void run() {
-        JavaFxPlugin.printLog("GenerateBuildClassFileTask", "run");
+        JavaFxPlugin.printLog("GenerateBuildConfigClassFileTask", "run");
         final File desFile = getSourcePathGenerate();
         final String packageName = getPackageName();
-        new BuildClassGenerate(desFile, packageName, mDefaultConfig).generate();
+        new BuildConfigClassGenerate(desFile, packageName, mDefaultConfig).generate();
     }
 
 
