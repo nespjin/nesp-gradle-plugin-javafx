@@ -16,7 +16,6 @@
 
 package com.nesp.gradle.plugin.javafx.fxml;
 
-import com.nesp.gradle.plugin.javafx.BaseTask;
 import com.nesp.gradle.plugin.javafx.Config;
 import com.nesp.gradle.plugin.javafx.JavaFxPlugin;
 import com.nesp.gradle.plugin.javafx.reflect.MethodUtil;
@@ -33,16 +32,11 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 
-public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
+public abstract class GenerateBaseControllerClassFileTask extends BaseFxmlTask {
     private static final String TAG = "GenerateBaseControllerClassFileTask";
-
-    private static final String[] SUPPORT_FILE_TYPES = new String[]{
-            ".fxml"
-    };
 
     private final String baseControllerSuperClassName;
     private final List<String> baseControllerSuperInterfaces;
@@ -110,7 +104,7 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
             }
         }
 
-        final List<BaseControllerClass> baseControllerClasses = new ArrayList<>();
+        final List<ClassModel> baseControllerClasses = new ArrayList<>();
         for (final File fxmlFile : fxmlFiles) {
             final BaseControllerFXMLParser baseControllerFXMLParser = new BaseControllerFXMLParser();
             baseControllerFXMLParser.setClassLoader(classLoader);
@@ -122,7 +116,7 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
             }
         }
 
-        for (final BaseControllerClass baseControllerClass : baseControllerClasses) {
+        for (final ClassModel baseControllerClass : baseControllerClasses) {
 
             TypeSpec.Builder classBuilder = TypeSpec
                     .classBuilder(baseControllerClass.getClassName())
@@ -266,55 +260,6 @@ public abstract class GenerateBaseControllerClassFileTask extends BaseTask {
             }
         }
 
-    }
-
-    /**
-     * Scan all fxml files under project.
-     *
-     * @param project project.
-     * @return Fxml files scanned.
-     */
-    private List<File> scanProjectFxmlFiles(Project project) {
-        File fxmlFilesRootDir = new File(project.getProjectDir() + "/src/main/resources");
-        return scanDirFxmlFiles(fxmlFilesRootDir);
-    }
-
-    /**
-     * Scan all fxml files recursive under dir.
-     *
-     * @param dir Root directory.
-     * @return Fxml files scanned.
-     */
-    private List<File> scanDirFxmlFiles(File dir) {
-        List<File> result = new LinkedList<>();
-        if (dir.isFile()) return result;
-        final File[] files = dir.listFiles();
-        if (files == null) return result;
-        for (File file : files) {
-            if (file.isFile()) {
-                if (isSupportFile(file.getName())) {
-                    result.add(file);
-                }
-            } else if (file.isDirectory()) {
-                result.addAll(scanDirFxmlFiles(file));
-            }
-        }
-        return result;
-    }
-
-    /**
-     * Check the file is supported.
-     *
-     * @param fileName file name for checking.
-     * @return true if supported, otherwise false.
-     */
-    private boolean isSupportFile(String fileName) {
-        for (String supportFileType : SUPPORT_FILE_TYPES) {
-            if (fileName.endsWith(supportFileType)) {
-                return true;
-            }
-        }
-        return false;
     }
 
 }

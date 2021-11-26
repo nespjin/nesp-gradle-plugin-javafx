@@ -16,10 +16,12 @@ nespJfx {
     }
 
     baseControllerOptions {
-        enable = true
+        enable = false
         superClass = "com.nesp.plugin.app.BaseController"
         interfaces = ["javafx.fxml.Initializable", "com.nesp.plugin.app.IController"]
     }
+
+    viewBinding = true
 }
 
 repositories {

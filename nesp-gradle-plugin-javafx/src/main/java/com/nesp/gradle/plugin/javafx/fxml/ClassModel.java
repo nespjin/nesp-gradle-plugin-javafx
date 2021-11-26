@@ -26,7 +26,7 @@ import java.util.List;
  * Description:
  **/
 @SuppressWarnings("UnusedReturnValue, NeverUsed")
-public final class BaseControllerClass {
+public final class ClassModel {
 
     private static final String TAG = "BaseControllerClass";
 
@@ -39,7 +39,7 @@ public final class BaseControllerClass {
         return mPackageName;
     }
 
-    public BaseControllerClass setPackageName(final String packageName) {
+    public ClassModel setPackageName(final String packageName) {
         mPackageName = packageName;
         return this;
     }
@@ -48,7 +48,7 @@ public final class BaseControllerClass {
         return mClassName;
     }
 
-    public BaseControllerClass setClassName(final String className) {
+    public ClassModel setClassName(final String className) {
         mClassName = className;
         return this;
     }
@@ -57,7 +57,7 @@ public final class BaseControllerClass {
         return mFields;
     }
 
-    public BaseControllerClass setFields(final List<ClassField> fields) {
+    public ClassModel setFields(final List<ClassField> fields) {
         mFields = fields;
         return this;
     }
@@ -66,7 +66,7 @@ public final class BaseControllerClass {
         return mClassMethods;
     }
 
-    public BaseControllerClass setClassMethods(final List<ClassMethod> classMethods) {
+    public ClassModel setClassMethods(final List<ClassMethod> classMethods) {
         mClassMethods = classMethods;
         return this;
     }

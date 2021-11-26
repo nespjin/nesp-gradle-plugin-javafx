@@ -24,9 +24,19 @@ import org.gradle.api.Action;
 import org.gradle.util.internal.ConfigureUtil;
 
 public class NespJavaFxPluginExtension {
+    private Boolean mViewBinding = null;
+
     BaseControllerOptions mBaseControllerOptions;
     ResourceConfig mResourceConfig;
     DefaultConfig mDefaultConfig;
+
+    public Boolean getViewBinding() {
+        return mViewBinding != null && mViewBinding;
+    }
+
+    public void setViewBinding(Boolean viewBinding) {
+        this.mViewBinding = viewBinding;
+    }
 
     public BaseControllerOptions baseControllerOptions(Closure<? super BaseControllerOptions> closure) {
         return baseControllerOptions(ConfigureUtil.configureUsing(closure));

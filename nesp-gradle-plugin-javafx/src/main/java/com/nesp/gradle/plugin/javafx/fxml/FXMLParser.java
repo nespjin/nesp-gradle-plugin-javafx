@@ -55,6 +55,8 @@ public class FXMLParser {
     public static final String CONTROLLER_SUFFIX = "Controller";
     public static final String INITIALIZE_METHOD_NAME = "initialize";
 
+    public static final String VIEW_BINDING_SUFFIX = "ViewBinding";
+
     protected XMLStreamReader mXMLStreamReader = null;
     protected final List<String> mPackages = new LinkedList<>();
     protected Map<String, Class<?>> mClasses = new HashMap<>();

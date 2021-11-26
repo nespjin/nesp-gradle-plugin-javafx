@@ -20,6 +20,7 @@ import com.nesp.gradle.plugin.javafx.defaultconfig.DefaultConfig;
 import com.nesp.gradle.plugin.javafx.defaultconfig.GenerateBuildConfigClassFileTask;
 import com.nesp.gradle.plugin.javafx.fxml.BaseControllerOptions;
 import com.nesp.gradle.plugin.javafx.fxml.GenerateBaseControllerClassFileTask;
+import com.nesp.gradle.plugin.javafx.fxml.GenerateViewBindingClassFileTask;
 import com.nesp.gradle.plugin.javafx.resource.GenerateRClassFileTask;
 import com.nesp.gradle.plugin.javafx.resource.ResourceConfig;
 import com.nesp.gradle.plugin.javafx.utils.ProjectUtils;
@@ -46,6 +47,7 @@ public class JavaFxPlugin implements Plugin<Project> {
     public static final String NESP_JAVA_FX_PLUGIN_EXTENSION_NAME = "nespJfx";
     public static final String CONFIG_JAVAFX_TASK_NAME = "configJavaFx";
     public static final String GENERATE_BASE_CONTROLLER_FILE_TASK_NAME = "generateJavaFxBaseControllerFile";
+    public static final String GENERATE_VIEW_BINDING_FILE_TASK_NAME = "generateJavaFxViewBindingFile";
     public static final String GENERATE_R_FILE_TASK_NAME = "generateJavaFxRFile";
     public static final String GENERATE_BUILD_FILE_TASK_NAME = "generateJavaFxBuildFile";
 
@@ -76,6 +78,7 @@ public class JavaFxPlugin implements Plugin<Project> {
         configureGenerateBuildFileTask(project);
         configureGenerateRFileTask(project);
         configureGenerateBaseControllerFileTask(project);
+        configureGenerateViewBindingFileTask(project);
     }
 
 
@@ -245,6 +248,55 @@ public class JavaFxPlugin implements Plugin<Project> {
                             public void execute(@Nonnull final Task task1) {
                                 if (baseControllerEnable) {
                                     generateBaseControllerClassFileTask.run();
+                                }
+                            }
+                        };
+
+                        // exec twice.
+                        compileJavaTask.doFirst(taskAction);
+                        compileJavaTask.doLast(taskAction);
+
+                    }
+                }
+            }
+        });
+    }
+
+    @SuppressWarnings("all")
+    private void configureGenerateViewBindingFileTask(Project project) {
+        // Do not use lambdas.
+        // Using Java lambdas is not supported as task inputs.
+        // Please refer to https://docs.gradle.org/7.2/userguide/validation_problems.html#implementation_unknown
+        project.afterEvaluate(new Action<Project>() {
+            @Override
+            public void execute(@Nonnull final Project project1) {
+                NespJavaFxPluginExtension nespJfx =
+                        (NespJavaFxPluginExtension) project1.getExtensions()
+                                .findByName(NESP_JAVA_FX_PLUGIN_EXTENSION_NAME);
+                if (nespJfx == null) return;
+
+                Boolean viewBindingEnable = nespJfx.getViewBinding();
+
+                GenerateViewBindingClassFileTask generateViewBindingClassFileTask = project1.getTasks().create(
+                        GENERATE_VIEW_BINDING_FILE_TASK_NAME,
+                        GenerateViewBindingClassFileTask.class);
+                if (viewBindingEnable) {
+                    final Set<Task> tasks = project1.getTasksByName(GENERATE_R_FILE_TASK_NAME, true);
+                    if (!tasks.isEmpty()) {
+                        final GenerateRClassFileTask generateRClassFileTask =
+                                (GenerateRClassFileTask) tasks.toArray(new Object[0])[0];
+                        generateViewBindingClassFileTask.dependsOn(generateRClassFileTask);
+                        generateViewBindingClassFileTask.run();
+                    }
+
+                    Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
+                    if (!compileJavaTasks.isEmpty()) {
+                        JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
+                        final Action<Task> taskAction = new Action<>() {
+                            @Override
+                            public void execute(@Nonnull final Task task1) {
+                                if (viewBindingEnable) {
+                                    generateViewBindingClassFileTask.run();
                                 }
                             }
                         };

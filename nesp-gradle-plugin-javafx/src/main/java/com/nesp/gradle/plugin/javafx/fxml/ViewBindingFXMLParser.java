@@ -26,30 +26,30 @@ import java.util.*;
  * Project: nesp-gradle-plugin-javafx
  * Description:
  **/
-public final class BaseControllerFXMLParser extends FXMLParser {
+public final class ViewBindingFXMLParser extends FXMLParser {
 
-    private static final String TAG = "BaseControllerFXMLParser";
+    private static final String TAG = "ViewBindingFXMLParser";
 
-    private final ClassModel mBaseControllerClass;
+    private final ClassModel mViewBindingClass;
 
-    private static final String BASE_CONTROLLER_CLASS_NAME_SUFFIX = CONTROLLER_SUFFIX;
-    private static final String BASE_CONTROLLER_CLASS_NAME_PREFIX = "Base";
+    private static final String VIEW_BINDING_CLASS_NAME_SUFFIX = VIEW_BINDING_SUFFIX;
+    private static final String VIEW_BINDING_CLASS_NAME_PREFIX = "";
 
 
-    public BaseControllerFXMLParser() {
-        mBaseControllerClass = new ClassModel();
-        mBaseControllerClass.setFields(new ArrayList<>());
-        mBaseControllerClass.setClassMethods(new ArrayList<>());
+    public ViewBindingFXMLParser() {
+        mViewBindingClass = new ClassModel();
+        mViewBindingClass.setFields(new ArrayList<>());
+        mViewBindingClass.setClassMethods(new ArrayList<>());
     }
 
     @Override
     protected void onPreParse() {
-        mBaseControllerClass.setClassName(
+        mViewBindingClass.setClassName(
                 String.format(
                         "%s%s%s",
-                        BASE_CONTROLLER_CLASS_NAME_PREFIX,
+                        VIEW_BINDING_CLASS_NAME_PREFIX,
                         regularFileName(),
-                        BASE_CONTROLLER_CLASS_NAME_SUFFIX
+                        VIEW_BINDING_CLASS_NAME_SUFFIX
                 )
         );
         super.onPreParse();
@@ -73,16 +73,10 @@ public final class BaseControllerFXMLParser extends FXMLParser {
         params.add(new ClassMethod.Param(URL.class, "location"));
         params.add(new ClassMethod.Param(ResourceBundle.class, "resources"));
         classMethod2.setParams(params);
-        mBaseControllerClass.getClassMethods().add(classMethod2);
-
-        final ClassMethod classMethod3 = new ClassMethod();
-        classMethod3.setName("onDestroy");
-        classMethod3.setModifiers(List.of(new Modifier[]{Modifier.PUBLIC}));
-        classMethod3.setReturnType(void.class);
-        mBaseControllerClass.getClassMethods().add(classMethod3);
+        mViewBindingClass.getClassMethods().add(classMethod2);
 
         List<ClassField> fieldsNeedRemoved = new LinkedList<>();
-        for (ClassField field : mBaseControllerClass.getFields()) {
+        for (ClassField field : mViewBindingClass.getFields()) {
             Class<?> type = getType(field.getTypeName());
             if (type != null) {
                 field.setType(type);
@@ -92,7 +86,7 @@ public final class BaseControllerFXMLParser extends FXMLParser {
         }
 
         if (!fieldsNeedRemoved.isEmpty()) {
-            mBaseControllerClass.getFields().removeAll(fieldsNeedRemoved);
+            mViewBindingClass.getFields().removeAll(fieldsNeedRemoved);
         }
 
         super.onPostParse();
@@ -109,7 +103,7 @@ public final class BaseControllerFXMLParser extends FXMLParser {
             if (FX_NAMESPACE_PREFIX.equals(prefix)
                     && FX_ID_ATTRIBUTE.equals(localName)
                     && !(name == null || name.length() == 0)) {
-                mBaseControllerClass.getFields()
+                mViewBindingClass.getFields()
                         .add(new ClassField(name, value));
             }
         }
@@ -141,7 +135,7 @@ public final class BaseControllerFXMLParser extends FXMLParser {
         return nameRegular.toString();
     }
 
-    public ClassModel getBaseControllerClass() {
-        return mBaseControllerClass;
+    public ClassModel getViewBindingClass() {
+        return mViewBindingClass;
     }
 }
