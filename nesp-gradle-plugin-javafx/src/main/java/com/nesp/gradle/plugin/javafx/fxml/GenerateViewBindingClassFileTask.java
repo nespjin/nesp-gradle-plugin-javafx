@@ -84,8 +84,15 @@ public abstract class GenerateViewBindingClassFileTask extends BaseFxmlTask {
             inflateMethodBuilder.addParameter(ResourceBundle.class, "resourceBundle", Modifier.FINAL);
 
             inflateMethodBuilder.beginControlFlow("try");
+            inflateMethodBuilder.addStatement("final boolean[] isInitialized = {false}");
             inflateMethodBuilder
-                    .addStatement("final " + className + " viewBinding = new " + className + "()");
+                    .beginControlFlow("final " + className + " viewBinding = new " + className + "()");
+            inflateMethodBuilder.addCode("@$T\n", Override.class);
+            inflateMethodBuilder.beginControlFlow("public void initialize(final URL location, final ResourceBundle resources)");
+            inflateMethodBuilder.addStatement("super.initialize(location, resources)");
+            inflateMethodBuilder.addStatement("isInitialized[0] = true");
+            inflateMethodBuilder.endControlFlow();
+            inflateMethodBuilder.endControlFlow("");
             inflateMethodBuilder
                     .addStatement("final ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader()");
             inflateMethodBuilder
@@ -94,6 +101,10 @@ public abstract class GenerateViewBindingClassFileTask extends BaseFxmlTask {
                             ")", FXMLLoader.class, Objects.class);
             inflateMethodBuilder.addStatement("fxmlLoader.setController(viewBinding)");
             inflateMethodBuilder.addStatement("fxmlLoader.load()");
+            inflateMethodBuilder.addStatement("final long beginWaitTime = System.currentTimeMillis()");
+            inflateMethodBuilder.beginControlFlow("while (!isInitialized[0])");
+            inflateMethodBuilder.addStatement("if (System.currentTimeMillis() - beginWaitTime > 3 * 1000) break");
+            inflateMethodBuilder.endControlFlow();
             inflateMethodBuilder.addStatement("return viewBinding");
             inflateMethodBuilder.endControlFlow();
             inflateMethodBuilder.beginControlFlow("catch ($T e)", IOException.class);
