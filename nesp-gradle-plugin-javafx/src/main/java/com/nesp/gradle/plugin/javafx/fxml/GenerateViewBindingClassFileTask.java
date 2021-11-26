@@ -159,6 +159,7 @@ public abstract class GenerateViewBindingClassFileTask extends BaseFxmlTask {
             }
 
             JavaFile.Builder javaFileBuilder = JavaFile.builder(packageName, classBuilder.build());
+            javaFileBuilder.indent("    ");
             javaFileBuilder.addFileComment(Config.CLASS_LICENSE_COMMENT);
             File file = new File(desFile.getAbsolutePath());
             if (!file.getParentFile().exists()) {

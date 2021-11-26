@@ -60,6 +60,7 @@ public final class RClassGenerate {
         }
 
         JavaFile.Builder javaFileBuilder = JavaFile.builder(mPackageName, rClassBuilder.build());
+        javaFileBuilder.indent("    ");
         javaFileBuilder.addFileComment(Config.CLASS_LICENSE_COMMENT);
         File file = new File(mSourceDir.getAbsolutePath());
         if (!file.getParentFile().exists()) {

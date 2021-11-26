@@ -79,6 +79,7 @@ public final class BuildConfigClassGenerate {
         buildClassBuilder.addField(debugFieldSpecBuilder.build());
 
         final JavaFile.Builder javaFileBuilder = JavaFile.builder(mPackageName, buildClassBuilder.build());
+        javaFileBuilder.indent("    ");
         javaFileBuilder.addFileComment(Config.CLASS_LICENSE_COMMENT);
         File file = new File(mSourceDir.getAbsolutePath());
         if (!file.getParentFile().exists()) {
