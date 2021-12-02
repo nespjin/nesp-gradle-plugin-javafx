@@ -86,7 +86,7 @@ public final class RClassGenerate {
         for (Map.Entry<Object, Object> fieldEntry : fieldEntries) {
             FieldSpec.Builder fieldSpecBuilder = FieldSpec.builder(
                     String.class,
-                    String.valueOf(fieldEntry.getKey()),
+                    String.valueOf(fieldEntry.getKey()).replace(".", "_"),
                     Modifier.PUBLIC,
                     Modifier.STATIC,
                     Modifier.FINAL
