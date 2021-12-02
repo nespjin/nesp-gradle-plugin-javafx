@@ -26,6 +26,7 @@ import java.util.*;
 
 final class StringInnerResourceClassLoader {
     private static final String STRING_RES_FILE_EXTENSION = ".properties";
+    private static final String STRING_RES_FILE_EXTENSION_XML = ".xml";
 
     private StringInnerResourceClassLoader() {
     }
@@ -47,7 +48,8 @@ final class StringInnerResourceClassLoader {
         if (ArrayUtils.isEmpty(files)) return;
 
         for (File file : files) {
-            if (file.isFile() && file.getAbsolutePath().endsWith(STRING_RES_FILE_EXTENSION)) {
+            if (file.isFile() && (file.getAbsolutePath().endsWith(STRING_RES_FILE_EXTENSION) ||
+                    file.getAbsolutePath().endsWith(STRING_RES_FILE_EXTENSION_XML))) {
                 load(classLoader, rInnerClasses, file.getAbsolutePath());
             } else {
                 loadFromDirPath(classLoader, rInnerClasses, resourceDirPath);
@@ -67,7 +69,12 @@ final class StringInnerResourceClassLoader {
         try {
             // "values/strings/strings.properties"
             InputStream fileInputStream = new FileInputStream(resourceFilePath);
-            properties.load(fileInputStream);
+            if (resourceFilePath.endsWith(STRING_RES_FILE_EXTENSION_XML)) {
+                properties.loadFromXML(fileInputStream);
+            } else {
+                properties.load(fileInputStream);
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
         }
