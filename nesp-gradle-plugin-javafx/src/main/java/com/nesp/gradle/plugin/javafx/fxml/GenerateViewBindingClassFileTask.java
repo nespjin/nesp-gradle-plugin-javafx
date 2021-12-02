@@ -81,7 +81,7 @@ public abstract class GenerateViewBindingClassFileTask extends BaseFxmlTask {
                 classBuilder.addField(filedBuilder.build());
             }
 
-            classBuilder.addField(FieldSpec.builder(Object.class,"root",Modifier.PRIVATE).build());
+            classBuilder.addField(FieldSpec.builder(Object.class, "root", Modifier.PRIVATE).build());
 
             final MethodSpec.Builder inflateMethodBuilder = MethodSpec.methodBuilder("inflate");
             inflateMethodBuilder.addParameter(String.class, "fxmlFile", Modifier.FINAL);
@@ -107,7 +107,7 @@ public abstract class GenerateViewBindingClassFileTask extends BaseFxmlTask {
             inflateMethodBuilder.addStatement("final long beginWaitTime = System.currentTimeMillis()");
             inflateMethodBuilder.beginControlFlow("while (!isInitialized[0])");
             inflateMethodBuilder.beginControlFlow("if (System.currentTimeMillis() - beginWaitTime > 3000)");
-            inflateMethodBuilder.addStatement("throw new RuntimeException($S)","load fxml timeout");
+            inflateMethodBuilder.addStatement("throw new RuntimeException($S)", "load fxml timeout");
             inflateMethodBuilder.endControlFlow();
             inflateMethodBuilder.endControlFlow();
             inflateMethodBuilder.addStatement("viewBinding.root = fxmlLoader.getRoot()");
@@ -121,6 +121,18 @@ public abstract class GenerateViewBindingClassFileTask extends BaseFxmlTask {
             inflateMethodBuilder.returns(ClassName.get("", className));
 
             classBuilder.addMethod(inflateMethodBuilder.build());
+
+            try {
+                final Class<?> jfxSdkResourceClass = classLoader.loadClass("com.nesp.sdk.javafx.Resource");
+                final MethodSpec.Builder inflateMethod2Builder = MethodSpec.methodBuilder("inflate");
+                inflateMethod2Builder.addParameter(String.class, "layout", Modifier.FINAL);
+                inflateMethod2Builder.addStatement("return inflate($T.fxmlFilePath(layout)," +
+                        " $T.newStringResourceBundle())", jfxSdkResourceClass, jfxSdkResourceClass);
+                inflateMethod2Builder.addModifiers(Modifier.STATIC, Modifier.PUBLIC);
+                inflateMethod2Builder.returns(ClassName.get("", className));
+                classBuilder.addMethod(inflateMethod2Builder.build());
+            } catch (ClassNotFoundException ignored) {
+            }
 
             final MethodSpec.Builder getRootMethodBuilder = MethodSpec.methodBuilder("getRoot");
             getRootMethodBuilder.addModifiers(Modifier.PUBLIC);
