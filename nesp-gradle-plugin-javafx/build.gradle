@@ -50,7 +50,11 @@ gradlePlugin {
 }
 
 repositories {
+    maven { url 'https://maven.aliyun.com/nexus/content/groups/public/' }
     mavenCentral()
+    google()
+    maven { url 'https://maven.aliyun.com/nexus/content/repositories/jcenter' }
+    maven { url "https://jitpack.io" }
 }
 
 def jfxVersion = '17.0.1'
