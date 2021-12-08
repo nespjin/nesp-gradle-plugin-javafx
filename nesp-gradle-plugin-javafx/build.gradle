@@ -35,13 +35,13 @@ pluginBundle {
     tags = ['NESP', 'JavaFx', 'FXML']
 }
 
-group 'com.nesp'
+group 'io.github.nespjin'
 version '1.1'
 
 gradlePlugin {
     plugins {
         NespJavaFx {
-            id = 'com.nesp.javafx'
+            id = 'io.github.nespjin.javafx'
             displayName = 'Nesp JavaFx Plugin '
             description = 'A plugin that helps you develop JavaFx project easilly.'
             implementationClass = 'com.nesp.gradle.plugin.javafx.JavaFxPlugin'
