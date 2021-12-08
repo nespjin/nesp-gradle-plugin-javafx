@@ -43,7 +43,7 @@ build.gradle
 
 ```Groovy
 plugins {
-    id 'com.nesp.javafx'
+    id 'io.github.nespjin.javafx'
 }
 
 nespJfx {
