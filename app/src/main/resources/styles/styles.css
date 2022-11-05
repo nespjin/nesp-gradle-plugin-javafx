@@ -14,17 +14,29 @@
  * limitations under the License.
  */
 
-package com.nesp.plugin.app;
+.app {
+    lighting-color: aqua;
+}
 
-/**
- * Team: NESP Technology
- * Author: <a href="mailto:1756404649@qq.com">JinZhaolu Email:1756404649@qq.com</a>
- * Time: Created 2021/11/3 23:22
- * Description:
- **/
-public interface IController {
+.root {
+    -app-primary-color: #007AFF;
+}
 
-    void onCreate();
+.button {
+    -fx-border-width: 0;
+    -fx-border-insets: 0;
+    -fx-border-image-insets: 0;
+    -fx-background-color: #007AFF;
+    -fx-pref-width: 200;
+    -fx-pref-height: 30;
+    -fx-background-radius: 5;
+    -fx-text-fill: white;
+}
 
-    void onDestroy();
+.button:hover {
+    -fx-opacity: 0.9;
+}
+
+.button:pressed {
+    -fx-opacity: 0.8;
 }

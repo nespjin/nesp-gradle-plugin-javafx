@@ -73,7 +73,7 @@ public class JavaFxPlugin implements Plugin<Project> {
     @Override
     public void apply(@Nonnull Project project) {
         preClear(project);
-        configureSourceSetGenerateFileOutputs(project);
+        configureConfigTask(project);
         configureNespJavaFxPluginExtension(project);
         configureGenerateBuildFileTask(project);
         configureGenerateRFileTask(project);
@@ -93,13 +93,8 @@ public class JavaFxPlugin implements Plugin<Project> {
         }
     }
 
-    /**
-     * Add Java files generated to sourceSets
-     *
-     * @param project project
-     */
     @SuppressWarnings("all")
-    private void configureSourceSetGenerateFileOutputs(Project project) {
+    private void configureConfigTask(Project project) {
         // Do not use lambdas.
         // Using Java lambdas is not supported as task inputs.
         // Please refer to https://docs.gradle.org/7.2/userguide/validation_problems.html#implementation_unknown
@@ -301,10 +296,7 @@ public class JavaFxPlugin implements Plugin<Project> {
                             }
                         };
 
-                        // exec twice.
                         compileJavaTask.doFirst(taskAction);
-                        compileJavaTask.doLast(taskAction);
-
                     }
                 }
             }
