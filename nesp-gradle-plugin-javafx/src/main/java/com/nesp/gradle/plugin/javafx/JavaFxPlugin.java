@@ -100,9 +100,9 @@ public class JavaFxPlugin implements Plugin<Project> {
         // Please refer to https://docs.gradle.org/7.2/userguide/validation_problems.html#implementation_unknown
         project.afterEvaluate(new Action<Project>() {
             @Override
-            public void execute(@Nonnull final Project project1) {
-                final ConfigTask configTask =
-                        project.getTasks().create(CONFIG_JAVAFX_TASK_NAME, ConfigTask.class);
+            public void execute(@Nonnull final Project project) {
+                final ConfigTask configTask = project.getTasks()
+                        .create(CONFIG_JAVAFX_TASK_NAME, ConfigTask.class);
                 configTask.run();
             }
         });
@@ -188,7 +188,7 @@ public class JavaFxPlugin implements Plugin<Project> {
                     }
                 });
                 generateRClassFileTask.run();
-                /*Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
+                /*Set<Task> compileJavaTasks = project.getTasksByName("compileJava", true);
                 if (!compileJavaTasks.isEmpty()) {
                     JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
                     compileJavaTask.doFirst(new Action<Task>() {
@@ -264,19 +264,19 @@ public class JavaFxPlugin implements Plugin<Project> {
         // Please refer to https://docs.gradle.org/7.2/userguide/validation_problems.html#implementation_unknown
         project.afterEvaluate(new Action<Project>() {
             @Override
-            public void execute(@Nonnull final Project project1) {
+            public void execute(@Nonnull final Project project) {
                 NespJavaFxPluginExtension nespJfx =
-                        (NespJavaFxPluginExtension) project1.getExtensions()
+                        (NespJavaFxPluginExtension) project.getExtensions()
                                 .findByName(NESP_JAVA_FX_PLUGIN_EXTENSION_NAME);
                 if (nespJfx == null) return;
 
                 Boolean viewBindingEnable = nespJfx.getViewBinding();
 
-                GenerateViewBindingClassFileTask generateViewBindingClassFileTask = project1.getTasks().create(
-                        GENERATE_VIEW_BINDING_FILE_TASK_NAME,
-                        GenerateViewBindingClassFileTask.class);
+                GenerateViewBindingClassFileTask generateViewBindingClassFileTask = project.getTasks()
+                        .create(GENERATE_VIEW_BINDING_FILE_TASK_NAME,
+                                GenerateViewBindingClassFileTask.class);
                 if (viewBindingEnable) {
-                    final Set<Task> tasks = project1.getTasksByName(GENERATE_R_FILE_TASK_NAME, true);
+                    final Set<Task> tasks = project.getTasksByName(GENERATE_R_FILE_TASK_NAME, true);
                     if (!tasks.isEmpty()) {
                         final GenerateRClassFileTask generateRClassFileTask =
                                 (GenerateRClassFileTask) tasks.toArray(new Object[0])[0];
@@ -284,19 +284,15 @@ public class JavaFxPlugin implements Plugin<Project> {
                         generateViewBindingClassFileTask.run();
                     }
 
-                    Set<Task> compileJavaTasks = project1.getTasksByName("compileJava", true);
+                    Set<Task> compileJavaTasks = project.getTasksByName("compileJava", true);
                     if (!compileJavaTasks.isEmpty()) {
                         JavaCompile compileJavaTask = (JavaCompile) compileJavaTasks.toArray(new Object[0])[0];
-                        final Action<Task> taskAction = new Action<>() {
+                        compileJavaTask.doFirst(new Action<>() {
                             @Override
                             public void execute(@Nonnull final Task task1) {
-                                if (viewBindingEnable) {
-                                    generateViewBindingClassFileTask.run();
-                                }
+                                generateViewBindingClassFileTask.run();
                             }
-                        };
-
-                        compileJavaTask.doFirst(taskAction);
+                        });
                     }
                 }
             }

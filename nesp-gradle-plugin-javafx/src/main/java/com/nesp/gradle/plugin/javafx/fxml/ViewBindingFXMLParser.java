@@ -96,15 +96,15 @@ public final class ViewBindingFXMLParser extends FXMLParser {
     protected void processStartElement() {
         for (int i = 0; i < mXMLStreamReader.getAttributeCount(); i++) {
             final String name = mXMLStreamReader.getLocalName();
-            final String prefix = mXMLStreamReader.getAttributePrefix(i);
-            final String localName = mXMLStreamReader.getAttributeLocalName(i);
-            final String value = mXMLStreamReader.getAttributeValue(i);
+            final String attrPrefix = mXMLStreamReader.getAttributePrefix(i);
+            final String attrName = mXMLStreamReader.getAttributeLocalName(i);
+            final String attrValue = mXMLStreamReader.getAttributeValue(i);
 
-            if (FX_NAMESPACE_PREFIX.equals(prefix)
-                    && FX_ID_ATTRIBUTE.equals(localName)
+            if (FX_NAMESPACE_PREFIX.equals(attrPrefix)
+                    && FX_ID_ATTRIBUTE.equals(attrName)
                     && !(name == null || name.length() == 0)) {
                 mViewBindingClass.getFields()
-                        .add(new ClassField(name, value));
+                        .add(new ClassField(name, attrValue));
             }
         }
     }
