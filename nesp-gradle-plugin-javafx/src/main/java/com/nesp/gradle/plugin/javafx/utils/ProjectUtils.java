@@ -28,7 +28,7 @@ public class ProjectUtils {
      */
     public static String findPackageName(Project project) {
         PluginContainer plugins = project.getPlugins();
-        String packageName = PACKAGE_NAME_DEFAULT;
+        String packageName = "";
         if (plugins.hasPlugin(ApplicationPlugin.class)) {
             JavaApplication javaApplication =
                     project.getExtensions().findByType(JavaApplication.class);
@@ -41,7 +41,7 @@ public class ProjectUtils {
             }
         }
 
-        if (plugins.hasPlugin(JavaPlugin.class)) {
+        if (packageName.isBlank() && plugins.hasPlugin(JavaPlugin.class)) {
             JavaPluginExtension javaPluginExtension = project.getExtensions().findByType(JavaPluginExtension.class);
             if (javaPluginExtension != null) {
                 String mainClassString = Optional.ofNullable(javaPluginExtension.manifest().getAttributes()
@@ -51,6 +51,11 @@ public class ProjectUtils {
                 }
             }
         }
+
+        if (packageName.isBlank()) {
+            packageName = PACKAGE_NAME_DEFAULT;
+        }
+
         return packageName;
     }
 
